@@ -1,2 +1,4 @@
-pollstagram
+Pollstagram
 ===========
+
+An awesome project.
