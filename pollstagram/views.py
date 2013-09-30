@@ -2,5 +2,7 @@ from django.http import HttpResponse
 import os
 
 def home(request):
-    return HttpResponse(os.path.abspath(__file__))
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    files = [f for f in os.listdir(cur_dir) if os.path.isfile(f)]
+    return HttpResponse('\n'.join(files))
 
