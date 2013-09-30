@@ -28,7 +28,7 @@
 		
 		{% include "nav.html" %}
 
-
+		{% block content %}
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
         <h1>Navbar example</h1>
@@ -37,7 +37,8 @@
           <a class="btn btn-lg btn-primary" href="../../components/#navbar">View navbar docs &raquo;</a>
         </p>
       </div>
-
+		{% endblock %}
+		
     </div> <!-- /container -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
