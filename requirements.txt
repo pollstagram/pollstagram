@@ -1,4 +1,4 @@
 Django==1.4.1
 MySQL-python==1.2.3
-argparse==1.2.1
-wsgiref==0.1.2
+django-storages==1.1.8
+boto==2.13.3
