@@ -78,6 +78,11 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+S3_URL = 'http://{bucket_name}.s3.amazonaws.com/'.format(bucket_name=AWS_STORAGE_BUCKET_NAME)
+STATIC_URL = S3_URL
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '$d)v57^(i6oh_1&amp;=qumnw(+k*^)fi(3i-n52x9axptl$xjyx)b'
 
@@ -121,6 +126,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+INSTALLED_APPS += ('storages',)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
