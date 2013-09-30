@@ -11,16 +11,20 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ['RDS_DB_NAME'],
-        'USER': os.environ['RDS_USERNAME'],
-        'PASSWORD': os.environ['RDS_PASSWORD'],
-        'HOST': os.environ['RDS_HOSTNAME'],
-        'PORT': os.environ['RDS_PORT'],
+try:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
     }
-}
+except KeyError:
+    pass
+    
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -79,14 +83,17 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_KEY']
-AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-DEFAULT_FILE_STORAGE = 'pollstagram.s3utils.MediaRootS3BotoStorage'
-STATICFILES_STORAGE = 'pollstagram.s3utils.StaticRootS3BotoStorage'
-S3_URL = 'http://{bucket_name}.s3.amazonaws.com'.format(bucket_name=AWS_STORAGE_BUCKET_NAME)
-STATIC_URL = S3_URL + STATIC_ROOT
-MEDIA_URL = S3_URL + MEDIA_ROOT
+try:
+    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_KEY']
+    AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
+    DEFAULT_FILE_STORAGE = 'pollstagram.s3utils.MediaRootS3BotoStorage'
+    STATICFILES_STORAGE = 'pollstagram.s3utils.StaticRootS3BotoStorage'
+    S3_URL = 'http://{bucket_name}.s3.amazonaws.com'.format(bucket_name=AWS_STORAGE_BUCKET_NAME)
+    STATIC_URL = S3_URL + STATIC_ROOT
+    MEDIA_URL = S3_URL + MEDIA_ROOT
+except KeyError:
+    pass
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '$d)v57^(i6oh_1&amp;=qumnw(+k*^)fi(3i-n52x9axptl$xjyx)b'
@@ -114,7 +121,7 @@ ROOT_URLCONF = 'pollstagram.urls'
 WSGI_APPLICATION = 'pollstagram.wsgi.application'
 
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates')
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -163,3 +170,8 @@ LOGGING = {
         },
     }
 }
+
+try:
+    from local_settings import *
+except ImportError, e:
+    pass
