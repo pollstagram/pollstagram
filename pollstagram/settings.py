@@ -46,22 +46,23 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+#MEDIA_URL = ''
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
+#STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
+STATIC_ROOT = '/static/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -81,9 +82,11 @@ STATICFILES_FINDERS = (
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_KEY']
 AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DEFAULT_FILE_STORAGE = 'pollstagram.s3utils.MediaRootS3BotoStorage'
+STATICFILES_STORAGE = 'pollstagram.s3utils.StaticRootS3BotoStorage'
 S3_URL = 'http://{bucket_name}.s3.amazonaws.com/'.format(bucket_name=AWS_STORAGE_BUCKET_NAME)
-STATIC_URL = S3_URL
+STATIC_URL = S3_URL + STATIC_ROOT
+MEDIA_URL = S3_URL + MEDIA_ROOT
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '$d)v57^(i6oh_1&amp;=qumnw(+k*^)fi(3i-n52x9axptl$xjyx)b'
