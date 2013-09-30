@@ -84,7 +84,7 @@ AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_KEY']
 AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
 DEFAULT_FILE_STORAGE = 'pollstagram.s3utils.MediaRootS3BotoStorage'
 STATICFILES_STORAGE = 'pollstagram.s3utils.StaticRootS3BotoStorage'
-S3_URL = 'http://{bucket_name}.s3.amazonaws.com/'.format(bucket_name=AWS_STORAGE_BUCKET_NAME)
+S3_URL = 'http://{bucket_name}.s3.amazonaws.com'.format(bucket_name=AWS_STORAGE_BUCKET_NAME)
 STATIC_URL = S3_URL + STATIC_ROOT
 MEDIA_URL = S3_URL + MEDIA_ROOT
 
