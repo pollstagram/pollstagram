@@ -7,19 +7,19 @@
 	<table class="table">
         <thead>
           <tr>
-            <th>Title</th>
+	        <th>Title</th>
+	        <th>Content (Rendered)</th>
             <th>Content (Markup)</th>
             <th>Content (Markdown)</th>
-            <th>Content (Rendered)</th>
           </tr>
         </thead>
         <tbody>
 		{% for question in questions %}
           <tr>
-            <td>{{ question.title }}</td>
+	        <td>{{ question.title }}</td>
+	        <td>{{ question.content_markup|safe }}</td>
             <td>{{ question.content_markup }}</td>
             <td>{{ question.content_markdown }}</td>
-            <td>{{ question.content_markup|safe }}</td>
           </tr>
 		{% endfor %}
         </tbody>
