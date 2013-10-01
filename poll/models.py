@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from markdown import markdown
 
 # Create your models here.
 class Tag(models.Model):
@@ -15,6 +16,10 @@ class Question(models.Model):
     published_time = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     
+    def save(self): 
+        self.content_markup = markdown(self.content_markdown, ['codehilite']) 
+        super(Question, self).save()
+        
     def __unicode__(self):
         return self.title
     
@@ -24,7 +29,7 @@ class Choice(models.Model):
     
     def __unicode__(self):
         return self.content    
-        
+
 class Vote(models.Model):
     question = models.ForeignKey(Question)
     user = models.ForeignKey(User)
