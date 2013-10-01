@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django import forms 
+from pagedown.widgets import AdminPagedownWidget
 from poll.models import *
 
 admin.site.register(Tag)
