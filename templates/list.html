@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+  <h2>Today's Top Poll Questions</h2>
+	<table class="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Content (Markup)</th>
+            <th>Content (Markdown)</th>
+            <th>Content (Rendered)</th>
+          </tr>
+        </thead>
+        <tbody>
+		{% for question in questions %}
+          <tr>
+            <td>{{ question.title }}</td>
+            <td>{{ question.content_markup }}</td>
+            <td>{{ question.content_markdown }}</td>
+            <td>{{ question.content_markup|safe }}</td>
+          </tr>
+		{% endfor %}
+        </tbody>
+      </table>
+</div>
+{% endblock %}
