@@ -143,6 +143,7 @@ INSTALLED_APPS = (
     'pagedown',
     'poll',
     'bootstrap3',
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging
