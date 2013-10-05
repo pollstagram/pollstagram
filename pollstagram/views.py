@@ -4,5 +4,5 @@ from poll.models import Question
 import os
 
 def home(request):
-    return render(request, 'list.html', {'questions': Question.objects.all(), 'env': os.environ,})
+    return render(request, 'list.html', {'questions': Question.objects.all(),})
 
