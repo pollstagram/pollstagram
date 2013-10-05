@@ -24,5 +24,20 @@
 		{% endfor %}
         </tbody>
       </table>
+
+	<table class="table">
+        <thead>
+          <tr>
+	        <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+		{% for e in env %}
+          <tr>
+	        <td>{{ e }}</td>
+          </tr>
+		{% endfor %}
+        </tbody>
+      </table>
 </div>
 {% endblock %}

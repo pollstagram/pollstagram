@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django import forms 
-from pagedown.widgets import AdminPagedownWidget
 from poll.models import Tag, Question, Choice, Vote, Answer
 from poll.forms import QuestionForm
 
