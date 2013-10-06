@@ -1,7 +1,20 @@
 # Django settings for pollstagram project.
 
 import os
+from unipath import Path
 
+# Normally you should not import ANYTHING from Django directly
+# into your settings, but ImproperlyConfigured is an exception.
+from django.core.exceptions import ImproperlyConfigured  
+  
+def get_env_variable(var_name):
+    """ Get the environment variable or return exception """
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        error_msg = 'Set the {name} environment variable'.format(name=var_name)
+        raise ImproperlyConfigured(error_msg)
+  
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -11,19 +24,26 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-try:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
-        }
+PROJECT_DIR = Path(__file__).ancestor(3)
+
+AWS_ACCESS_KEY_ID = get_env_variable('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = get_env_variable('AWS_SECRET_KEY')
+AWS_STORAGE_BUCKET_NAME = get_env_variable('AWS_STORAGE_BUCKET_NAME')
+
+DEFAULT_FILE_STORAGE = 'pollstagram.utils.s3.MediaRootS3BotoStorage'
+STATICFILES_STORAGE = 'pollstagram.utils.s3.StaticRootS3BotoStorage'
+S3_URL = 'http://{bucket_name}.s3.amazonaws.com/{root}'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': get_env_variable('RDS_DB_NAME'),
+        'USER': get_env_variable('RDS_USERNAME'),
+        'PASSWORD': get_env_variable('RDS_PASSWORD'),
+        'HOST': get_env_variable('RDS_HOSTNAME'),
+        'PORT': get_env_variable('RDS_PORT'),
     }
-except KeyError:
-    pass
+}
     
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -50,23 +70,23 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/media/'
+MEDIA_ROOT = ''
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-#MEDIA_URL = ''
+MEDIA_URL = S3_URL.format(bucket_name=AWS_STORAGE_BUCKET_NAME, root='media/')
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 #STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
-STATIC_ROOT = '/static/'
+STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-#STATIC_URL = '/static/'
+STATIC_URL = S3_URL.format(bucket_name=AWS_STORAGE_BUCKET_NAME, root='static/')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -82,18 +102,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-try:
-    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_KEY']
-    AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-    DEFAULT_FILE_STORAGE = 'pollstagram.s3utils.MediaRootS3BotoStorage'
-    STATICFILES_STORAGE = 'pollstagram.s3utils.StaticRootS3BotoStorage'
-    S3_URL = 'http://{bucket_name}.s3.amazonaws.com'.format(bucket_name=AWS_STORAGE_BUCKET_NAME)
-    STATIC_URL = S3_URL + STATIC_ROOT
-    MEDIA_URL = S3_URL + MEDIA_ROOT
-except KeyError:
-    pass
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '$d)v57^(i6oh_1&amp;=qumnw(+k*^)fi(3i-n52x9axptl$xjyx)b'
@@ -121,7 +129,7 @@ ROOT_URLCONF = 'pollstagram.urls'
 WSGI_APPLICATION = 'pollstagram.wsgi.application'
 
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'templates'),
+    PROJECT_DIR.child('templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -144,6 +152,8 @@ INSTALLED_APPS = (
     'poll',
     'bootstrap3',
     'south',
+    'taggit',
+    'voting',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -174,8 +184,3 @@ LOGGING = {
         },
     }
 }
-
-try:
-    from local_settings import *
-except ImportError, e:
-    pass
