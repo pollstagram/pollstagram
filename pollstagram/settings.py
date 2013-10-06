@@ -127,6 +127,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -142,6 +143,7 @@ INSTALLED_APPS = (
     'pagedown',
     'poll',
     'bootstrap3',
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging
