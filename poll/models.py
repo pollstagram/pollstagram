@@ -13,7 +13,7 @@ class Question(models.Model):
     title = models.CharField(max_length=255)
     content_markdown = models.TextField(blank=True)
     content_markup = models.TextField(blank=True)
-    created_by = models.ForeignKey(User, blank=True, null=True)
+    created_by = models.ForeignKey(User, null=True)
     published_time = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
     
