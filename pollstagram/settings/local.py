@@ -12,11 +12,10 @@ DATABASES = {
     }
 }
 
-MEDIA_ROOT = ''
 MEDIA_URL = ''
-STATIC_ROOT = ''
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'static'),
+    PROJECT_DIR.child('static'),
 )
 
