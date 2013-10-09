@@ -65,7 +65,14 @@
 								{% for choice in question.choice_set.all %}
 								<tr>
 									<td>{{ forloop.counter }}</td>
-									<td>{{ choice.content_markup|safe }}</td>
+									<td>								
+										<div class="radio">
+										  <label>
+										    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" {% if forloop.first %}checked{% endif %}>
+											{{ choice.content_markup|safe }}
+										  </label>
+										</div>
+									</td>
 								</tr>
 								{% endfor %}
 							</tbody>
