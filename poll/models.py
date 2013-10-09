@@ -10,9 +10,8 @@ class Tag(models.Model):
         return self.title
 
 class Question(models.Model):
-    title = models.CharField(max_length=255)
-    content_markdown = models.TextField(blank=True)
-    content_markup = models.TextField(blank=True)
+    content_markdown = models.TextField(max_length=255)
+    content_markup = models.TextField(max_length=255)
     created_by = models.ForeignKey(User, null=True)
     published_time = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, null=True, blank=True)
@@ -22,7 +21,7 @@ class Question(models.Model):
         super(Question, self).save()
         
     def __unicode__(self):
-        return self.title
+        return self.content_markdown
     
 class Choice(models.Model):
     question = models.ForeignKey(Question)
