@@ -2,7 +2,20 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-10">
+	<div class="col-lg-10">	
+	<ul class="nav nav-pills">
+	  <li class="active"><a href="#">Questions</a></li>
+	  <li><a href="#">Tags</a></li>
+	  <li><a href="#">Users</a></li>
+	</ul>
+	</div>
+	<div class="col-lg-2">
+		<button type="button" class="btn btn-primary">Ask a Question</button>
+	</div>
+</div>
+<hr/>
+<div class="row">
+	<div class="col-lg-10">
 		<div class="panel-group" id="accordion">		
 		{% for question in questions %}
 			<div class="panel panel-default">
@@ -38,6 +51,6 @@
 		{% endfor %}
 		</div>
 	</div>
-	<div class="col-md-2">Sidebar goes here</div>
+	<div class="col-lg-2">Sidebar goes here</div>
 </div>
 {% endblock %}
