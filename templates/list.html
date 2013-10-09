@@ -10,7 +10,9 @@
 	</ul>
 	</div>
 	<div class="col-lg-2">
-		<button type="button" class="btn btn-primary">Ask a Question</button>
+		<div class="pull-right">
+			<button type="button" class="btn btn-primary">Ask a Question</button>
+		</div>
 	</div>
 </div>
 <hr/>
@@ -20,6 +22,11 @@
 		{% for question in questions %}
 			<div class="panel panel-default">
 				<div class="panel-heading">
+					<div class="pull-right">
+						{% for tag in question.tags.all %}
+						<span class="badge">{{ tag.name }}</span>
+						{% endfor %}
+					</div>
 					<h3 class="panel-title">
 						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}">
 							{{ question.content_markdown|truncatewords:3 }}

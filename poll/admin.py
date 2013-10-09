@@ -11,7 +11,7 @@ class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
     readonly_fields = ('published_time',)
     fieldsets = [
-        (None,               {'fields': ['content_markdown']}),
+        (None,               {'fields': ['content_markdown', 'tags',]}),
         ('Date information', {'fields': ['published_time'], 'classes': ['collapse']}),
     ]
     inlines = [ChoiceInline]

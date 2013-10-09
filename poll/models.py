@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from markdown import markdown
+from taggit.managers import TaggableManager
 
 # Create your models here.
 
@@ -9,6 +10,7 @@ class Question(models.Model):
     content_markup = models.TextField(max_length=255)
     created_by = models.ForeignKey(User, null=True)
     published_time = models.DateTimeField(auto_now_add=True)
+    tags = TaggableManager()
     
     class Meta:
         ordering = ['-published_time']
