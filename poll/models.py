@@ -3,18 +3,12 @@ from django.contrib.auth.models import User
 from markdown import markdown
 
 # Create your models here.
-class Tag(models.Model):
-    title = models.CharField(max_length=255)
-    
-    def __unicode__(self):
-        return self.title
 
 class Question(models.Model):
     content_markdown = models.TextField(max_length=255)
     content_markup = models.TextField(max_length=255)
     created_by = models.ForeignKey(User, null=True)
     published_time = models.DateTimeField(auto_now_add=True)
-    tags = models.ManyToManyField(Tag, null=True, blank=True)
     
     def save(self): 
         self.content_markup = markdown(self.content_markdown, ['codehilite']) 
@@ -25,20 +19,16 @@ class Question(models.Model):
     
 class Choice(models.Model):
     question = models.ForeignKey(Question)
-    content = models.TextField(max_length=255)    
+    content_markdown = models.TextField(max_length=255)
+    content_markup = models.TextField(max_length=255)
     
-    def __unicode__(self):
-        return self.content    
-
-class Vote(models.Model):
-    question = models.ForeignKey(Question)
-    user = models.ForeignKey(User)
-    vote_time = models.DateTimeField(auto_now_add=True)
-    positive = models.BooleanField()
-    
-    def __unicode__(self):
-        return self.question
+    def save(self): 
+        self.content_markup = markdown(self.content_markdown, ['codehilite']) 
+        super(Choice, self).save()    
         
+    def __unicode__(self):
+        return self.content_markdown    
+
 class Answer(models.Model):
     question = models.ForeignKey(Question)
     user = models.ForeignKey(User)

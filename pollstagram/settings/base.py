@@ -153,6 +153,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'south',
     'taggit',
+    'voting',
 )
 
 # A sample logging configuration. The only tangible logging
