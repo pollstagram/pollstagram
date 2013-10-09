@@ -1,4 +1,4 @@
-Django==1.4.1
+Django==1.5.4
 Markdown==2.3.1
 MySQL-python==1.2.3
 South==0.8.2
