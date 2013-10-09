@@ -20,41 +20,61 @@
 	<div class="col-lg-10">
 		<div class="panel-group" id="accordion">		
 		{% for question in questions %}
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<div class="pull-right">
-						{% for tag in question.tags.all %}
-						<span class="badge">{{ tag.name }}</span>
-						{% endfor %}
+		<div class="row">		
+			<div class="col-lg-1">
+				<div class="pull-right">	
+					<div class="btn-group-vertical">
+						<button type="button" class="btn btn-default">
+						  <span class="glyphicon glyphicon-chevron-up"></span>
+						</button>
+						<button type="button" class="btn btn-default">
+							23
+						</button>
+						<button type="button" class="btn btn-default">
+						  <span class="glyphicon glyphicon-chevron-down"></span>
+						</button>
 					</div>
-					<h3 class="panel-title">
-						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}">
-							{{ question.content_markdown|truncatewords:3 }}
-				        </a>
-					</h3>
-				</div>
-				<div id="collapse{{ forloop.counter }}" class="panel-collapse collapse{% if forloop.first %} in{% endif %}">
-					<div class="panel-body">
-						{{ question.content_markup|safe }}
-					</div>
-					<table class="table">
-				        <thead>
-				          <tr>
-				            <th>#</th>
-				            <th>Option</th>
-				          </tr>
-				        </thead>
-				        <tbody>
-							{% for choice in question.choice_set.all %}
-							<tr>
-								<td>{{ forloop.counter }}</td>
-								<td>{{ choice.content_markup|safe }}</td>
-							</tr>
-							{% endfor %}
-						</tbody>
-					</table>
 				</div>
 			</div>
+			<div class="col-lg-11">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="pull-right">
+							{% for tag in question.tags.all %}
+							<span class="badge">{{ tag.name }}</span>
+							{% endfor %}
+						</div>
+						<h3 class="panel-title">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}">
+								{{ question.content_markdown|truncatewords:3 }}
+					        </a>
+						</h3>
+					</div>
+					<div id="collapse{{ forloop.counter }}" class="panel-collapse collapse{% if forloop.first %} in{% endif %}">
+						<div class="panel-body">
+							{{ question.content_markup|safe }}
+						</div>
+						<table class="table">
+					        <thead>
+					          <tr>
+					            <th>#</th>
+					            <th>Option</th>
+					          </tr>
+					        </thead>
+					        <tbody>
+								{% for choice in question.choice_set.all %}
+								<tr>
+									<td>{{ forloop.counter }}</td>
+									<td>{{ choice.content_markup|safe }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr/>
 		{% endfor %}
 		</div>
 	</div>
