@@ -3,32 +3,40 @@
 {% block content %}
 <div class="row">
 	<div class="col-md-10">
-	{% for question in questions %}
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">{{ question.content_markdown|truncatewords:3 }}</h3>
+		<div class="panel-group" id="accordion">		
+		{% for question in questions %}
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}">
+							{{ question.content_markdown|truncatewords:3 }}
+				        </a>
+					</h3>
+				</div>
+				<div id="collapse{{ forloop.counter }}" class="panel-collapse collapse{% if forloop.first %} in{% endif %}">
+					<div class="panel-body">
+						{{ question.content_markup|safe }}
+					</div>
+					<table class="table">
+				        <thead>
+				          <tr>
+				            <th>#</th>
+				            <th>Option</th>
+				          </tr>
+				        </thead>
+				        <tbody>
+							{% for choice in question.choice_set.all %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								<td>{{ choice.content_markup|safe }}</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
 			</div>
-			<div class="panel-body">
-				{{ question.content_markup|safe }}
-			</div>
-			<table class="table">
-		        <thead>
-		          <tr>
-		            <th>#</th>
-		            <th>Option</th>
-		          </tr>
-		        </thead>
-		        <tbody>
-					{% for choice in question.choice_set.all %}
-					<tr>
-						<td>{{ forloop.counter }}</td>
-						<td>{{ choice.content_markup|safe }}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+		{% endfor %}
 		</div>
-	{% endfor %}
 	</div>
 	<div class="col-md-2">Sidebar goes here</div>
 </div>

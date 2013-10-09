@@ -10,6 +10,9 @@ class Question(models.Model):
     created_by = models.ForeignKey(User, null=True)
     published_time = models.DateTimeField(auto_now_add=True)
     
+    class Meta:
+        ordering = ['-published_time']
+    
     def save(self): 
         self.content_markup = markdown(self.content_markdown, ['codehilite']) 
         super(Question, self).save()
