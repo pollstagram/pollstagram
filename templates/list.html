@@ -2,34 +2,93 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-10">
-	{% for question in questions %}
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">{{ question.content_markdown|truncatewords:3 }}</h3>
-			</div>
-			<div class="panel-body">
-				{{ question.content_markup|safe }}
-			</div>
-			<table class="table">
-		        <thead>
-		          <tr>
-		            <th>#</th>
-		            <th>Option</th>
-		          </tr>
-		        </thead>
-		        <tbody>
-					{% for choice in question.choice_set.all %}
-					<tr>
-						<td>{{ forloop.counter }}</td>
-						<td>{{ choice.content_markup|safe }}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	{% endfor %}
+	<div class="col-lg-10">	
+	<ul class="nav nav-pills">
+	  <li class="active"><a href="#">Questions</a></li>
+	  <li><a href="#">Tags</a></li>
+	  <li><a href="#">Users</a></li>
+	</ul>
 	</div>
-	<div class="col-md-2">Sidebar goes here</div>
+	<div class="col-lg-2">
+		<div class="pull-right">
+			<button type="button" class="btn btn-primary">Ask a Question</button>
+		</div>
+	</div>
+</div>
+<hr/>
+<div class="row">
+	<div class="col-lg-10">
+		<div class="panel-group" id="accordion">		
+		{% for question in questions %}
+		<div class="row">		
+			<div class="col-lg-1">
+				<div class="pull-right">	
+					<div class="btn-group-vertical">
+						<button type="button" class="btn btn-default">
+						  <span class="glyphicon glyphicon-chevron-up"></span>
+						</button>
+						<button type="button" class="btn btn-default">
+							23
+						</button>
+						<button type="button" class="btn btn-default">
+						  <span class="glyphicon glyphicon-chevron-down"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-11">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="pull-right">
+							{% for tag in question.tags.all %}
+							<span class="badge">{{ tag.name }}</span>
+							{% endfor %}
+						</div>
+						<h3 class="panel-title">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{ forloop.counter }}">
+								{{ question.content_markdown|truncatewords:3 }}
+					        </a>
+						</h3>
+					</div>
+					<div id="collapse{{ forloop.counter }}" class="panel-collapse collapse{% if forloop.first %} in{% endif %}">
+						<div class="panel-body">
+							{{ question.content_markup|safe }}
+						</div>
+						<table class="table">
+					        <thead>
+					          <tr>
+					            <th>#</th>
+					            <th>Option</th>
+					          </tr>
+					        </thead>
+					        <tbody>
+								{% for choice in question.choice_set.all %}
+								<tr>
+									<td>{{ forloop.counter }}</td>
+									<td>								
+										<div class="radio">
+										  <label>
+										    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" {% if forloop.first %}checked{% endif %}>
+											{{ choice.content_markup|safe }}
+										  </label>
+										</div>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+					<div class="panel-footer">
+						created by <a href="/users/{{ question.created_by.username }}">{{ question.created_by.username }}</a> {{ question.published_time|timesince }} ago
+						| <a href="/share">share</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr/>
+		{% endfor %}
+		</div>
+	</div>
+	<div class="col-lg-2">Sidebar goes here</div>
 </div>
 {% endblock %}
