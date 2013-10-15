@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load voting_tags %} 
 
 {% block content %}
 <div class="row">
@@ -23,14 +24,16 @@
 		<div class="row">		
 			<div class="col-lg-1">
 				<div class="pull-right">	
-					<div class="btn-group-vertical">
-						<button type="button" class="btn btn-default">
+					<div class="btn-group-vertical">						
+						{% score_for_object question as score %}
+						{% vote_by_user user on question as vote %}
+						<button onclick="vote('{{ question.id }}', '{% if vote and vote.is_upvote %}clear{% else %}up{% endif %}');" type="button" class="btn btn-default">
 						  <span class="glyphicon glyphicon-chevron-up"></span>
 						</button>
-						<button type="button" class="btn btn-default">
-							23
+						<button type="button" class="btn btn-default" disabled="disabled">
+							<span id="score-{{ question.id }}">{{ score.score }}</span>
 						</button>
-						<button type="button" class="btn btn-default">
+						<button onclick="vote('{{ question.id }}', '{% if vote and vote.is_downvote %}clear{% else %}down{% endif %}');" type="button" class="btn btn-default">
 						  <span class="glyphicon glyphicon-chevron-down"></span>
 						</button>
 					</div>
@@ -91,4 +94,20 @@
 	</div>
 	<div class="col-lg-2">Sidebar goes here</div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function vote(id, direction) {
+	$.post('/polls/'+id+'/'+direction+'vote/', {HTTP_X_REQUESTED:'XMLHttpRequest', csrfmiddlewaretoken: '{{csrf_token}}'},
+		function(data) {
+			if (data.success == true) {
+				$('#score-'+id).text(data.score.score);
+			} else {
+				alert('ERROR: ' + data.error_message);
+			}
+		}, 'json'
+	);
+}
+</script>
 {% endblock %}

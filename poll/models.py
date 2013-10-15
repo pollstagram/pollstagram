@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from markdown import markdown
 from taggit.managers import TaggableManager
+from django.conf import settings
 
 # Create your models here.
 
@@ -41,6 +42,14 @@ class Answer(models.Model):
     
     def __unicode__(self):
         return self.question
+ 
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(settings.AUTH_USER_MODEL)
+#     date_of_birth = models.DateField(null=True)
+#     gender = models.CharField(max_lengh=255)
+#     location = models.CharField(max_length=255)  
+#     bio = models.TextField(max_length=255)
+#     # avatar
         
 class BinaryAnswer(Answer):
     pass
