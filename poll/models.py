@@ -3,12 +3,14 @@ from django.contrib.auth.models import User
 from markdown import markdown
 from taggit.managers import TaggableManager
 from django.conf import settings
+from BeautifulSoup import BeautifulSoup
 
 # Create your models here.
 
 class Question(models.Model):
     content_markdown = models.TextField(max_length=255)
     content_markup = models.TextField(max_length=255)
+    content_rawtext = models.TextField(max_length=255)
     created_by = models.ForeignKey(User, null=True)
     published_time = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
@@ -17,7 +19,8 @@ class Question(models.Model):
         ordering = ['-published_time']
     
     def save(self): 
-        self.content_markup = markdown(self.content_markdown, ['codehilite']) 
+        self.content_markup = markdown(self.content_markdown, ['codehilite'])
+        self.content_rawtext = ''.join(BeautifulSoup(self.content_markup).findAll(text=True))
         super(Question, self).save()
         
     def __unicode__(self):
