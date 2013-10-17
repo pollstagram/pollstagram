@@ -8,15 +8,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Question.content_rawtext'
-        db.add_column(u'poll_question', 'content_rawtext',
-                      self.gf('django.db.models.fields.TextField')(default='', max_length=255),
-                      keep_default=False)
+        # Deleting field 'Answer.question'
+        db.delete_column(u'poll_answer', 'question_id')
 
 
     def backwards(self, orm):
-        # Deleting field 'Question.content_rawtext'
-        db.delete_column(u'poll_question', 'content_rawtext')
+
+        # User chose to not deal with backwards NULL issues for 'Answer.question'
+        raise RuntimeError("Cannot reverse this migration. 'Answer.question' and its values cannot be restored.")
+        
+        # The following code is provided here to aid in writing a correct migration        # Adding field 'Answer.question'
+        db.add_column(u'poll_answer', 'question',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['poll.Question']),
+                      keep_default=False)
 
 
     models = {
@@ -59,8 +63,8 @@ class Migration(SchemaMigration):
         u'poll.answer': {
             'Meta': {'object_name': 'Answer'},
             'answer_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'choice': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['poll.Choice']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['poll.Question']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'poll.binaryanswer': {
@@ -71,6 +75,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Choice'},
             'content_markdown': ('django.db.models.fields.TextField', [], {'max_length': '255'}),
             'content_markup': ('django.db.models.fields.TextField', [], {'max_length': '255'}),
+            'content_rawtext': ('django.db.models.fields.TextField', [], {'max_length': '255'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'question': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['poll.Question']"})
         },
