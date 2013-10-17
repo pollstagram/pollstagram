@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!-- {% load bootstrap3 %} -->
+<html>
+  <head>
+    {% block title %} <title>Pollstagram</title> {% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <!-- {% bootstrap_css %} -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<style type="text/css">
+		body {
+			padding: 30px;
+		}
+
+		.navbar {
+			margin-bottom: 30px;
+		}
+	</style>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+    <div class="container">
+		
+		{% include "nav.html" %}
+
+		{% block content %}
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h1>Navbar example</h1>
+        <p>This example is a quick exercise to illustrate how the default, static navbar and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
+        <p>
+          <a class="btn btn-lg btn-primary" href="../../components/#navbar">View navbar docs &raquo;</a>
+        </p>
+      </div>
+		{% endblock %}
+		
+    </div> <!-- /container -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	<!-- {% bootstrap_javascript %} -->
+    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	{% block scripts %}{% endblock %}
+  </body>
+</html>
