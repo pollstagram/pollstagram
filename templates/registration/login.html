@@ -1,27 +1,66 @@
 {% extends "registration/base.html" %}
 
+{% load bootstrap3 %}
+
 {% block title %}Log in{% endblock %}
 
-{% block content %}
 
-<h1>Log in</h1>
+{% block styles %}
+{{ block.super }}
+<style type="text/css">
+	body {
+		padding-top: 40px;
+		padding-bottom: 40px;
+		background-color: #eee;
+	}
 
-{% if form.errors %}
-<p class="error">Please correct the errors below:</p>
-{% endif %}
-
-<form method="post" action="?next={{ next|default:"/" }}">{% csrf_token %}
-<dl>
-<dt><label for="id_username">Username:</label>{% if form.username.errors %} <span class="error">{{ form.username.errors|join:", " }}</span>{% endif %}</dt>
-<dd>{{ form.username }}</dd>
-<dt><label for="id_password">Password:</label>{% if form.password.errors %} <span class="error">{{ form.password.errors|join:", " }}</span>{% endif %}</dt>
-<dd>{{ form.password }}</dd>
-<dt><input type="submit" value="Log in" /></dt>
-</dl>
-</form>
+	.form-signin {
+		max-width: 330px;
+		padding: 15px;
+		margin: 0 auto;
+	}
+	.form-signin .form-signin-heading,
+	.form-signin .checkbox {
+		margin-bottom: 10px;
+	}
+	.form-signin .checkbox {
+		font-weight: normal;
+	}
+	.form-signin .form-control {
+		position: relative;
+		font-size: 16px;
+		height: auto;
+		padding: 10px;
+	  	-webkit-box-sizing: border-box;
+	    -moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+	.form-signin .form-control:focus {
+		z-index: 2;
+	}
+	.form-signin input[type="text"] {
+		margin-bottom: -1px;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+	.form-signin input[type="password"] {
+		margin-bottom: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+</style>
 {% endblock %}
 
-{% block content-related %}
-<p>If you don't have an account, you can <a href="/accounts/register/">sign
-up</a> for one.
+{% block content %}
+<div class="container">
+	<form class="form-signin" method="post" action="?next={{ next|default:"/" }}">
+		<h2 class="form-signin-heading">Please sign in</h2>
+		{% csrf_token %}
+		{% bootstrap_form form %}
+		{% buttons %}
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+		{% endbuttons %}
+	</form>
+	If you don't have an account, you can <a href="{% url 'registration_register' %}">sign up</a> for one.
+</div>
 {% endblock %}

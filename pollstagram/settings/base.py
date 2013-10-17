@@ -161,11 +161,9 @@ INSTALLED_APPS = (
 )
 # Set activation window for django-registration app
 ACCOUNT_ACTIVATION_DAYS = 7
-# Set this up later
-#EMAIL_HOST=''
-#EMAIL_PORT=1023
-#EMAIL_HOST_USER='username'
-#EMAIL_HOST_PASSWORD='password'
+
+EMAIL_BACKEND = 'django_ses.SESBackend'
+DEFAULT_FROM_EMAIL = 'comp4920thu09@gmail.com'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
