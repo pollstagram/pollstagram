@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-{% load bootstrap3 %}
+<!-- {% load bootstrap3 %} -->
 <html>
   <head>
     <title>Pollstagram</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    {#{% bootstrap_css %}#}
+    <!-- {% bootstrap_css %} -->
 	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<style type="text/css">
 		body {
@@ -45,7 +45,8 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="http://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-	{#{% bootstrap_javascript %}#}
+	<!-- {% bootstrap_javascript %} -->
     <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	{% block scripts %}{% endblock %}
   </body>
 </html>
