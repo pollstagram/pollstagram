@@ -13,6 +13,8 @@ def get_env_variable(var_name):
         return os.environ[var_name]
     except KeyError:
         error_msg = 'Set the {name} environment variable'.format(name=var_name)
+	# TEMP: print environment variables
+	print os.environ
         raise ImproperlyConfigured(error_msg)
   
 DEBUG = True
@@ -138,6 +140,7 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
     'django.contrib.auth',
+    'django.contrib.humanize',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -147,6 +150,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'registration',
     'storages',
     'pagedown',
     'poll',
@@ -155,6 +159,13 @@ INSTALLED_APPS = (
     'taggit',
     'voting',
 )
+# Set activation window for django-registration app
+ACCOUNT_ACTIVATION_DAYS = 7
+# Set this up later
+#EMAIL_HOST=''
+#EMAIL_PORT=1023
+#EMAIL_HOST_USER='username'
+#EMAIL_HOST_PASSWORD='password'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
