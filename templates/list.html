@@ -83,8 +83,7 @@
 
 {% block scripts %}
 <script type="text/javascript">
-$(document).ready(function () {
-	
+// $(document).ready(function () {
 	function vote(id, direction) {
 		$.post(
 			'/polls/'+id+'/'+direction+'vote/', 
@@ -118,8 +117,6 @@ $(document).ready(function () {
 			'json'
 		);
 	}
-	
-	
-});
+// });
 </script>
 {% endblock %}

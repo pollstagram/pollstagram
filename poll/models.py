@@ -41,7 +41,6 @@ class Choice(models.Model):
         return self.content_rawtext    
 
 class Answer(models.Model):
-    question = models.ForeignKey(Question)
     choice = models.ForeignKey(Choice)
     user = models.ForeignKey(User)
     answer_time = models.DateTimeField(auto_now_add=True)

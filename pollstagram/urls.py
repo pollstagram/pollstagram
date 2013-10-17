@@ -14,9 +14,9 @@ urlpatterns = patterns('',
     url(r'^$', views.IndexView.as_view(), name='home'),
     # Generic view to vote on Link objects
     url(r'^polls/(?P<object_id>\d+)/(?P<direction>up|down|clear)vote/?$', vote_on_object, dict(model=Question, template_object_name='questions', allow_xmlhttprequest=True)),
-    
+    url(r'^answers/create/$', views.AnswerCreateView.as_view()),
     # url(r'^pollstagram/', include('pollstagram.foo.urls')),
-    (r'^test/', TemplateView.as_view(template_name="nav_test.html")),
+    url(r'^test/', TemplateView.as_view(template_name="nav_test.html")),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
