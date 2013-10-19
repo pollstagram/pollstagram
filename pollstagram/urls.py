@@ -20,7 +20,9 @@ urlpatterns = patterns('',
         dict(model=Question, template_object_name='questions', allow_xmlhttprequest=True)
     ),
     url(r'^answers/create/$', login_required(views.AnswerCreateView.as_view()), name='answer_create'),
-    url(r'^test/', TemplateView.as_view(template_name="nav_test.html")),
+    url(r'^polls/(?P<pk>\d+)/$', views.PollDetailView.as_view(), name='poll_detail'),
+    url(r'^polls/(?P<pk>\d+)/results/$', login_required(views.PollResultsView.as_view()), name='poll_results'),
+    url(r'^test/', TemplateView.as_view(template_name="test.html")),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="piechart" style="width: 900px; height: 500px;">
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+	google.load("visualization", "1", {packages:["corechart"]});
+	google.setOnLoadCallback(drawChart);
+	function drawChart() {
+		var data = google.visualization.arrayToDataTable([
+			['Option', 'Votes'],
+			{% for choice in question.choices.all %}
+			['{{ choice.content_rawtext }}', {{ choice.num_votes }}],
+			{% endfor %}
+		]);
+
+		var options = {
+			title: '{{ question.content_rawtext }}'
+		};
+
+		var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+		chart.draw(data, options);
+	}
+</script>
+{% endblock %}

@@ -43,7 +43,7 @@
 							{{ question.content_markup|safe }}
 						</div>
 						<div id="temp_div">
-							<form method="post" action="{% url 'answer_create' %}">
+							<form class="poll_answer" method="post" action="{% url 'answer_create' %}" role="form">
 								{% csrf_token %}
 								<table class="table">
 							        <thead>
@@ -53,13 +53,13 @@
 							          </tr>
 							        </thead>
 							        <tbody>
-										{% for choice in question.choice_set.all %}
+										{% for choice in question.choices.all %}
 										<tr>
 											<td>{{ forloop.counter }}</td>
 											<td>								
 												<div class="radio">
 												  <label>
-												    <input type="radio" name="choice" id="choice_option" value="{{ choice.id }}">
+												    <input class="choice_option" type="radio" name="choice" value="{{ choice.id }}">
 													{{ choice.content_markup|safe }}
 												  </label>
 												</div>
@@ -87,6 +87,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
 function vote(id, direction) {
 	$.post(
@@ -122,26 +123,29 @@ function vote(id, direction) {
 	);
 }
 
+function pollAnswer() {
+    $.ajax({
+        data: $(this).serialize(),
+        type: $(this).attr('method'),
+        url: $(this).attr('action'),
+        success: function(data) {
+			var str = JSON.stringify(data);
+			alert(str);
+            $("#temp_div").html(str);
+        },
+        error: function(data) {
+			var str = JSON.stringify(data);
+            $("#temp_div").html("Something went wrong!"+str);
+        }
+    });
+    return false;
+}
+
 $(document).ready(function () {
-	$('input[type=radio]').click(function() {
-	    $(this).closest("form").submit(function() {
-			alert($(this).closest("form").serialize());
-		    $.ajax({
-		        data: $(this).serialize(),
-		        type: $(this).attr('method'),
-		        url: $(this).attr('action'),
-		        success: function(data) {
-					var str = JSON.stringify(data);
-					alert(str);
-	                $("#temp_div").html(str);
-		        },
-		        error: function(data) {
-					var str = JSON.stringify(data);
-	                $("#temp_div").html("Something went wrong!"+str);
-	            }
-		    });
-		    return false;
-		}).submit();
+	$("form.poll_answer").submit(pollAnswer);
+	
+	$("input[type='radio'].choice_option").click(function() {
+	    $(this).closest("form.poll_answer").submit();
 	});
 });
 </script>

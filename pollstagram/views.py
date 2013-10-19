@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DetailView
 import os, json
 
 from poll.models import Question, Answer, Answer
@@ -11,6 +11,16 @@ class IndexView(ListView):
     model = Question
     template_name = 'list.html'
     context_object_name = 'questions'
+
+class PollDetailView(DetailView):
+    model = Question
+    template_name = 'detail.html'
+    context_object_name = 'question'
+
+class PollResultsView(DetailView):
+    model = Question
+    template_name = 'results.html'
+    context_object_name = 'question'
 
 class AjaxableResponseMixin(object):
     """
@@ -36,7 +46,7 @@ class AjaxableResponseMixin(object):
         response = super(AjaxableResponseMixin, self).form_valid(form)
         if self.request.is_ajax():
             data = {
-                'pk': self.object.pk,
+                'pk': self.object.choice.question.content_rawtext,
             }
             return self.render_to_json_response(data)
         else:
