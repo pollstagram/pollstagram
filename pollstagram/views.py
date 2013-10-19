@@ -1,9 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from poll.models import Question, Answer
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, CreateView
-import os
+import os, json
+
+from poll.models import Question, Answer, Answer
+from poll.forms import AnswerForm
 
 class IndexView(ListView):
     model = Question
@@ -41,8 +43,13 @@ class AjaxableResponseMixin(object):
             return response
 
 class AnswerCreateView(AjaxableResponseMixin, CreateView):
+    form_class = AnswerForm
     model = Answer
     success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(AnswerCreateView, self).form_valid(form)
 
 def home(request):
     if 'search' in request.GET and 'keyword' in request.GET:

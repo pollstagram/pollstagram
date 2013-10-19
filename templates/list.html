@@ -42,29 +42,34 @@
 						<div class="panel-body">
 							{{ question.content_markup|safe }}
 						</div>
-						<table class="table">
-					        <thead>
-					          <tr>
-					            <th>#</th>
-					            <th>Option</th>
-					          </tr>
-					        </thead>
-					        <tbody>
-								{% for choice in question.choice_set.all %}
-								<tr>
-									<td>{{ forloop.counter }}</td>
-									<td>								
-										<div class="radio">
-										  <label>
-										    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1">
-											{{ choice.content_markup|safe }}
-										  </label>
-										</div>
-									</td>
-								</tr>
-								{% endfor %}
-							</tbody>
-						</table>
+						<div id="temp_div">
+							<form method="post" action="{% url 'answer_create' %}">
+								{% csrf_token %}
+								<table class="table">
+							        <thead>
+							          <tr>
+							            <th>#</th>
+							            <th>Option</th>
+							          </tr>
+							        </thead>
+							        <tbody>
+										{% for choice in question.choice_set.all %}
+										<tr>
+											<td>{{ forloop.counter }}</td>
+											<td>								
+												<div class="radio">
+												  <label>
+												    <input type="radio" name="choice" id="choice_option" value="{{ choice.id }}">
+													{{ choice.content_markup|safe }}
+												  </label>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</form>
+						</div>					
 					</div>
 					<div class="panel-footer">
 						created by <a href="/users/{{ question.created_by.username }}">{{ question.created_by.username }}</a> {{ question.published_time|timesince }} ago
@@ -83,40 +88,61 @@
 
 {% block scripts %}
 <script type="text/javascript">
-// $(document).ready(function () {
-	function vote(id, direction) {
-		$.post(
-			'/polls/'+id+'/'+direction+'vote/', 
-			{
-				HTTP_X_REQUESTED: 'XMLHttpRequest', 
-				csrfmiddlewaretoken: '{{csrf_token}}'
-			},
-			function(data) {
-				if (data.success == true) {
-					$('#score_'+id).text(data.score.score);
-					if (direction == 'up') {
-						$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "clear");');
-						$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "down");');
-						$('#upvote_button_'+id).button('toggle');
-						$('#downvote_button_'+id).removeClass('active');
-					} else if (direction == 'down') {
-						$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "up");');
-						$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "clear");');
-						$('#upvote_button_'+id).removeClass('active');
-						$('#downvote_button_'+id).button('toggle');
-					} else {
-						$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "up");');
-						$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "down");');
-						$('#upvote_button_'+id).removeClass('active');
-						$('#downvote_button_'+id).removeClass('active');
-					}
+function vote(id, direction) {
+	$.post(
+		'/polls/'+id+'/'+direction+'vote/', 
+		{
+			HTTP_X_REQUESTED: 'XMLHttpRequest', 
+			csrfmiddlewaretoken: '{{csrf_token}}'
+		},
+		function(data) {
+			if (data.success == true) {
+				$('#score_'+id).text(data.score.score);
+				if (direction == 'up') {
+					$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "clear");');
+					$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "down");');
+					$('#upvote_button_'+id).button('toggle');
+					$('#downvote_button_'+id).removeClass('active');
+				} else if (direction == 'down') {
+					$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "up");');
+					$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "clear");');
+					$('#upvote_button_'+id).removeClass('active');
+					$('#downvote_button_'+id).button('toggle');
 				} else {
-					alert('ERROR: ' + data.error_message);
+					$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "up");');
+					$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "down");');
+					$('#upvote_button_'+id).removeClass('active');
+					$('#downvote_button_'+id).removeClass('active');
 				}
-			}, 
-			'json'
-		);
-	}
-// });
+			} else {
+				alert('ERROR: ' + data.error_message);
+			}
+		}, 
+		'json'
+	);
+}
+
+$(document).ready(function () {
+	$('input[type=radio]').click(function() {
+	    $(this).closest("form").submit(function() {
+			alert($(this).closest("form").serialize());
+		    $.ajax({
+		        data: $(this).serialize(),
+		        type: $(this).attr('method'),
+		        url: $(this).attr('action'),
+		        success: function(data) {
+					var str = JSON.stringify(data);
+					alert(str);
+	                $("#temp_div").html(str);
+		        },
+		        error: function(data) {
+					var str = JSON.stringify(data);
+	                $("#temp_div").html("Something went wrong!"+str);
+	            }
+		    });
+		    return false;
+		}).submit();
+	});
+});
 </script>
 {% endblock %}

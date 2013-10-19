@@ -32,7 +32,6 @@ class Migration(SchemaMigration):
         # Adding model 'Answer'
         db.create_table(u'poll_answer', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('question', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['poll.Question'])),
             ('choice', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['poll.Choice'])),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('answer_time', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
@@ -111,7 +110,6 @@ class Migration(SchemaMigration):
             'answer_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'choice': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['poll.Choice']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['poll.Question']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'poll.binaryanswer': {
