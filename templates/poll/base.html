@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-10">
+	{% block content-detailed %}
+	{% endblock %}
+	</div>
+	<div class="col-lg-2">
+	{% block sidebar %}
+		Sidebar here please...
+	{% endblock %}
+	</div>
+</div>
+{% endblock %}

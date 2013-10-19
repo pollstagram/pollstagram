@@ -25,7 +25,13 @@ class Question(models.Model):
         super(Question, self).save()
 
     def total_answers(self):
-        return self.choices.aggregate(Count('answers'))
+        return self.choices.aggregate(Count('answers'))['answers__count']
+        
+    def user_has_answered(self, user):
+        return self.choices.filter(answers__user=user).exists()
+        
+    def last_active(self):
+        pass    
         
     def __unicode__(self):
         return self.content_rawtext
@@ -39,6 +45,12 @@ class Choice(models.Model):
     def num_votes(self):
         return self.answers.count()
     
+    def percent_all_votes(self):
+        return 100*self.num_votes()/float(self.question.total_answers())
+    
+    def user_has_chosen(self, user):
+        return self.answers.filter(user=user).exists()
+            
     def save(self):
         self.content_markup = markdown(self.content_markdown, ['codehilite'])
         self.content_rawtext = ''.join(BeautifulSoup(self.content_markup).findAll(text=True))
@@ -51,6 +63,9 @@ class Answer(models.Model):
     choice = models.ForeignKey(Choice, related_name='answers')
     user = models.ForeignKey(User)
     answer_time = models.DateTimeField(auto_now_add=True)
+    
+    def get_absolute_url(self):
+        return u'/polls/{pk}/results'.format(pk=self.choice.question.id)
 
     def __unicode__(self):
         return u'{choice} chosen by {user} at {time}'.format(choice=unicode(self.choice), user=unicode(self.user), time=self.answer_time)

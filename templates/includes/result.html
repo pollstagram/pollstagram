@@ -1,0 +1,30 @@
+{% extends "includes/detail.html" %}
+
+{% block choices_info %}
+<div id="temp_div">
+<table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Option</th>
+      </tr>
+    </thead>
+    <tbody>
+		{% for choice in question.choices.all %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>								
+				{{ choice.content_markup|safe }}
+				<div class="progress">
+					<div class="progress-bar" role="progressbar" aria-valuenow="{{ choice.percent_all_votes|floatformat:"0" }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ choice.percent_all_votes|floatformat:"0" }}%;">
+						<span class="sr-only"></span>
+					</div>
+				</div>
+				{{ choice.num_votes }} of {{ question.total_answers }} ({{ choice.percent_all_votes|floatformat:"0" }}%)
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</div>
+{% endblock %}

@@ -9,17 +9,15 @@ from poll.forms import AnswerForm
 
 class IndexView(ListView):
     model = Question
-    template_name = 'list.html'
     context_object_name = 'questions'
 
 class PollDetailView(DetailView):
     model = Question
-    template_name = 'detail.html'
     context_object_name = 'question'
 
 class PollResultsView(DetailView):
     model = Question
-    template_name = 'results.html'
+    template_name = 'poll/question_result.html'
     context_object_name = 'question'
 
 class AjaxableResponseMixin(object):
@@ -55,7 +53,6 @@ class AjaxableResponseMixin(object):
 class AnswerCreateView(AjaxableResponseMixin, CreateView):
     form_class = AnswerForm
     model = Answer
-    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
         form.instance.user = self.request.user

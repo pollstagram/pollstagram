@@ -29,23 +29,7 @@
 
     <div class="container">
 		
-		{% include "nav.html" %}
-
-		<div class="row">
-			<div class="col-lg-10">	
-			<ul class="nav nav-pills">
-			  <li class="active"><a href="#">Questions</a></li>
-			  <li><a href="#">Tags</a></li>
-			  <li><a href="#">Users</a></li>
-			</ul>
-			</div>
-			<div class="col-lg-2">
-				<div class="pull-right">
-					<button type="button" class="btn btn-primary">Ask a Question</button>
-				</div>
-			</div>
-		</div>
-		<hr/>
+		{% include "includes/nav.html" %}
 
 		{% block content %}
       <!-- Main component for a primary marketing message or call to action -->
