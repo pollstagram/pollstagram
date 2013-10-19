@@ -1,5 +1,6 @@
 <html>
   <head>
+	<script src="http://code.jquery.com/jquery.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
@@ -18,7 +19,7 @@
           title: 'My Daily Activities'
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        var chart = new google.visualization.PieChart($('#piechart').get(0));
         chart.draw(data, options);
       }
     </script>

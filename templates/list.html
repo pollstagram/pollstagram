@@ -42,7 +42,7 @@
 						<div class="panel-body">
 							{{ question.content_markup|safe }}
 						</div>
-						<div id="temp_div">
+						<div class="choice_container">
 							<form class="poll_answer" method="post" action="{% url 'answer_create' %}" role="form">
 								{% csrf_token %}
 								<table class="table">
@@ -124,14 +124,30 @@ function vote(id, direction) {
 }
 
 function pollAnswer() {
-    $.ajax({
-        data: $(this).serialize(),
-        type: $(this).attr('method'),
-        url: $(this).attr('action'),
+    var frm = $(this);
+
+	$.ajax({
+        data: frm.serialize(),
+        type: frm.attr('method'),
+        url: frm.attr('action'),
         success: function(data) {
-			var str = JSON.stringify(data);
-			alert(str);
-            $("#temp_div").html(str);
+			alert(JSON.stringify(data));
+			google.load('visualization', '1', {packages : ['corechart'], 'callback': function() {
+				var data = google.visualization.arrayToDataTable([
+					['Task', 'Hours per Day'],
+					['Work',     11],
+					['Eat',      2],
+					['Commute',  2],
+					['Watch TV', 2],
+					['Sleep',    7]
+				]);
+				var options = {
+					title: 'My Daily Activities'
+				};
+
+				var chart = new google.visualization.PieChart(frm.closest(".choice_container").get(0));
+				chart.draw(data, options);
+			}});
         },
         error: function(data) {
 			var str = JSON.stringify(data);
