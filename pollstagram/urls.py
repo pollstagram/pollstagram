@@ -20,6 +20,7 @@ urlpatterns = patterns('',
         dict(model=Question, template_object_name='questions', allow_xmlhttprequest=True)
     ),
     url(r'^answers/create/$', login_required(views.AnswerCreateView.as_view()), name='answer_create'),
+    url(r'^polls/create/$', login_required(views.PollCreateView.as_view()), name='poll_create'),
     url(r'^polls/(?P<pk>\d+)/$', views.PollDetailView.as_view(), name='poll_detail'),
     url(r'^polls/(?P<pk>\d+)/results/$', login_required(views.PollResultsView.as_view()), name='poll_results'),
     url(r'^test/', TemplateView.as_view(template_name="test.html")),

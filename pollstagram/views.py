@@ -5,7 +5,7 @@ from django.views.generic import ListView, CreateView, DetailView
 import os, json
 
 from poll.models import Question, Answer, Answer
-from poll.forms import AnswerForm
+from poll.forms import QuestionForm, AnswerForm
 
 class IndexView(ListView):
     model = Question
@@ -53,10 +53,15 @@ class AjaxableResponseMixin(object):
 class AnswerCreateView(AjaxableResponseMixin, CreateView):
     form_class = AnswerForm
     model = Answer
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(AnswerCreateView, self).form_valid(form)
+
+class PollCreateView(CreateView):
+    form_class = QuestionForm
+    model = Question
 
 def home(request):
     if 'search' in request.GET and 'keyword' in request.GET:
