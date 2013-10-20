@@ -33,8 +33,8 @@
 			<div class="panel-body">
 				{{ question.content_markup|safe }}
 			</div>
-			{% block choices_info %}
 			<div id="temp_div">
+			{% block choices_info %}
 				<form class="poll_answer" method="post" action="{% url 'answer_create' %}" role="form">
 					{% csrf_token %}
 					<table class="table">
@@ -61,8 +61,8 @@
 						</tbody>
 					</table>
 				</form>
-			</div>
-			{% endblock %}			
+			{% endblock %}		
+			</div>	
 			<div class="panel-footer">
 				created by <a href="/users/{{ question.created_by.username }}">{{ question.created_by.username }}</a> {{ question.published_time|timesince }} ago
 				| <a href="/share">share</a>

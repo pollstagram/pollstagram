@@ -13,3 +13,84 @@
 	</div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+function vote(id, direction) {
+	$.post(
+		'/polls/'+id+'/'+direction+'vote/', 
+		{
+			HTTP_X_REQUESTED: 'XMLHttpRequest', 
+			csrfmiddlewaretoken: '{{csrf_token}}'
+		},
+		function(data) {
+			if (data.success == true) {
+				$('#score_'+id).text(data.score.score);
+				if (direction == 'up') {
+					$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "clear");');
+					$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "down");');
+					$('#upvote_button_'+id).button('toggle');
+					$('#downvote_button_'+id).removeClass('active');
+				} else if (direction == 'down') {
+					$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "up");');
+					$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "clear");');
+					$('#upvote_button_'+id).removeClass('active');
+					$('#downvote_button_'+id).button('toggle');
+				} else {
+					$('#upvote_button_'+id).attr('onclick', 'vote('+id+', "up");');
+					$('#downvote_button_'+id).attr('onclick', 'vote('+id+', "down");');
+					$('#upvote_button_'+id).removeClass('active');
+					$('#downvote_button_'+id).removeClass('active');
+				}
+			} else {
+				alert('ERROR: ' + data.error_message);
+			}
+		}, 
+		'json'
+	);
+}
+
+function pollAnswer() {
+    var frm = $(this);
+
+	$.ajax({
+        data: frm.serialize(),
+        type: frm.attr('method'),
+        url: frm.attr('action'),
+        success: function(data) {
+			alert(JSON.stringify(data));
+			google.load('visualization', '1', {packages : ['corechart'], 'callback': function() {
+				var data = google.visualization.arrayToDataTable([
+					['Task', 'Hours per Day'],
+					['Work',     11],
+					['Eat',      2],
+					['Commute',  2],
+					['Watch TV', 2],
+					['Sleep',    7]
+				]);
+				var options = {
+					title: 'My Daily Activities'
+				};
+
+				var chart = new google.visualization.PieChart(frm.closest(".choice_container").get(0));
+				chart.draw(data, options);
+			}});
+        },
+        error: function(data) {
+			var str = JSON.stringify(data);
+            $("#temp_div").html("Something went wrong!"+str);
+        }
+    });
+    return false;
+}
+
+$(document).ready(function () {
+	// $("form.poll_answer").submit(pollAnswer);
+	
+	$("input[type='radio'].choice_option").click(function() {
+	    $(this).closest("form.poll_answer").submit();
+	});
+});
+</script>
+{% endblock %}

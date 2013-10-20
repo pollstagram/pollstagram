@@ -7,6 +7,7 @@ class Command(BaseCommand):
         u = User.objects.get(pk=1)
         c = Choice.objects.get(pk=7)
         q = Question.objects.get(pk=3)
-        print c.percent_all_votes()
-        print q.total_answers()
+        print q.results
         print q.user_has_answered(u)
+        print c.percent_all_votes()
+        

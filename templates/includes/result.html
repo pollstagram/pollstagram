@@ -1,7 +1,6 @@
 {% extends "includes/detail.html" %}
 
 {% block choices_info %}
-<div id="temp_div">
 <table class="table">
     <thead>
       <tr>
@@ -16,15 +15,14 @@
 			<td>								
 				{{ choice.content_markup|safe }}
 				<div class="progress">
-					<div class="progress-bar" role="progressbar" aria-valuenow="{{ choice.percent_all_votes|floatformat:"0" }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ choice.percent_all_votes|floatformat:"0" }}%;">
+					<div class="progress-bar" role="progressbar" aria-valuenow="{% widthratio choice.num_votes question.results.answers__count 100 %}" aria-valuemin="0" aria-valuemax="100" style="width: {% widthratio choice.num_votes question.results.answers__count 100 %}%;">
 						<span class="sr-only"></span>
 					</div>
 				</div>
-				{{ choice.num_votes }} of {{ question.total_answers }} ({{ choice.percent_all_votes|floatformat:"0" }}%)
+				{{ choice.num_votes }} of {{ question.results.answers__count }} ({% widthratio choice.num_votes question.results.answers__count 100 %}%)
 			</td>
 		</tr>
 		{% endfor %}
 	</tbody>
 </table>
-</div>
 {% endblock %}

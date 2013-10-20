@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Max, Min
 from django.contrib.auth.models import User
 from markdown import markdown
 from taggit.managers import TaggableManager
@@ -24,8 +24,10 @@ class Question(models.Model):
         self.content_rawtext = ''.join(BeautifulSoup(self.content_markup).findAll(text=True))
         super(Question, self).save()
 
-    def total_answers(self):
-        return self.choices.aggregate(Count('answers'))['answers__count']
+    def _results(self):
+        result = self.choices.aggregate(Count('answers'))
+        result.update(self.choices.annotate(num_answers=Count('answers')).aggregate(Max('num_answers'), Min('num_answers')))
+        return result
         
     def user_has_answered(self, user):
         return self.choices.filter(answers__user=user).exists()
@@ -35,6 +37,8 @@ class Question(models.Model):
         
     def __unicode__(self):
         return self.content_rawtext
+    
+    results = property(_results)
     
 class Choice(models.Model):
     question = models.ForeignKey(Question, related_name='choices')
@@ -46,7 +50,7 @@ class Choice(models.Model):
         return self.answers.count()
     
     def percent_all_votes(self):
-        return 100*self.num_votes()/float(self.question.total_answers())
+        return 100*self.num_votes()/float(self.question.results['answers__count'])
     
     def user_has_chosen(self, user):
         return self.answers.filter(user=user).exists()
