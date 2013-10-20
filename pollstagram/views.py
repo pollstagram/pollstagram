@@ -2,10 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
+from django.http import HttpResponseRedirect
 import os, json
 
-from poll.models import Question, Answer, Answer
-from poll.forms import QuestionForm, AnswerForm
+from poll.models import Question, Answer
+from poll.forms import QuestionForm, AnswerForm, QuestionChoiceFormset
 
 class IndexView(ListView):
     model = Question
@@ -62,7 +63,30 @@ class AnswerCreateView(AjaxableResponseMixin, CreateView):
 class PollCreateView(CreateView):
     form_class = QuestionForm
     model = Question
+    
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        context = self.get_context_data()
+        question_choice_form = context['question_choice_formset']
+        if question_choice_form.is_valid():
+            self.object = form.save()
+            question_choice_form.instance = self.object
+            question_choice_form.save()
+            return HttpResponseRedirect('/')
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+            
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
 
+    def get_context_data(self, **kwargs):
+        context = super(PollCreateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['question_choice_formset'] = QuestionChoiceFormset(self.request.POST)
+        else: 
+            context['question_choice_formset'] = QuestionChoiceFormset()
+        return context
+        
 def home(request):
     if 'search' in request.GET and 'keyword' in request.GET:
         keyword = request.GET['keyword']
