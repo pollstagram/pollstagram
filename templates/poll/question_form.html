@@ -1,0 +1,41 @@
+{% extends "poll/base.html" %}
+
+{% load bootstrap3 %}
+
+{% block styles %}
+{{ block.super }}
+{{ form.media }}
+{% endblock %}
+
+{% block content-detailed %}
+<form action="" method="post">
+	{% csrf_token %}
+	{% bootstrap_form form %}
+	
+	<h2>Choices</h2>
+    {{ question_choice_formset.management_form }}
+    {% for form in question_choice_formset.forms %}
+    <div class="item">
+		<div class="form-row inline {{ question_choice_formset.prefix }}">
+		{% bootstrap_form form %}
+    	</div>
+    </div>
+    {% endfor %}
+    
+	{% buttons %}
+		<button class="btn btn-default" type="submit">Submit</button>
+	{% endbuttons %}
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ STATIC_URL }}jquery.formset-1.2/src/jquery.formset.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+	$('.form-row.inline.{{ question_choice_formset.prefix }}').formset({
+		prefix: '{{ question_choice_formset.prefix }}',
+		addCssClass: 'btn btn-info'
+	});
+});
+</script>
+{% endblock %}

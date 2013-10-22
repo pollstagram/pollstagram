@@ -1,0 +1,72 @@
+{% load voting_tags %} 
+
+<div class="row">		
+	<div class="col-lg-1">
+		<div class="pull-right">	
+			<div class="btn-group-vertical">						
+				{% score_for_object question as score %}
+				{% vote_by_user user on question as vote %}
+				<button id="upvote_button_{{ question.id }}" onclick="vote('{{ question.id }}', '{% if vote and vote.is_upvote %}clear{% else %}up{% endif %}');" type="button" class="btn btn-default{% if vote and vote.is_upvote %} active{% endif %}">
+				  <span class="glyphicon glyphicon-chevron-up"></span>
+				</button>
+				<button type="button" class="btn btn-default" disabled="disabled">
+					<span id="score_{{ question.id }}">{{ score.score }}</span>
+				</button>
+				<button id="downvote_button_{{ question.id }}" onclick="vote('{{ question.id }}', '{% if vote and vote.is_downvote %}clear{% else %}down{% endif %}');" type="button" class="btn btn-default{% if vote and vote.is_downvote %} active{% endif %}">
+				  <span class="glyphicon glyphicon-chevron-down"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-11">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<div class="pull-right">
+					{% for tag in question.tags.all %}
+					<span class="badge">{{ tag.name }}</span>
+					{% endfor %}
+				</div>
+				<h3 class="panel-title">
+					<a href="{% url 'poll_detail' question.id %}">{{ question.content_rawtext|truncatewords:3 }}</a>
+				</h3>
+			</div>
+			<div class="panel-body">
+				{{ question.content_markup|safe }}
+			</div>
+			<div id="temp_div">
+			{% block choices_info %}
+				<form class="poll_answer" method="post" action="{% url 'answer_create' %}" role="form">
+					{% csrf_token %}
+					<table class="table">
+				        <thead>
+				          <tr>
+				            <th>#</th>
+				            <th>Option</th>
+				          </tr>
+				        </thead>
+				        <tbody>
+							{% for choice in question.choices.all %}
+							<tr>
+								<td>{{ forloop.counter }}</td>
+								<td>								
+									<div class="radio">
+									  <label>
+									    <input class="choice_option" type="radio" name="choice" value="{{ choice.id }}">
+										{{ choice.content_markup|safe }}
+									  </label>
+									</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</form>
+			{% endblock %}		
+			</div>	
+			<div class="panel-footer">
+				created by <a href="/users/{{ question.created_by.username }}">{{ question.created_by.username }}</a> {{ question.published_time|timesince }} ago
+				| <a href="/share">share</a>
+			</div>
+		</div>
+	</div>
+</div>

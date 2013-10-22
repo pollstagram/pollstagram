@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="container">
-	<form class="form-signin" method="post">
+	<form method="post">
 		<h2>Create an account</h2>
 		{% csrf_token %}
 		{% bootstrap_form form %}
@@ -14,7 +14,7 @@
 			<button class="btn btn-default" type="submit">Register</button>
 		{% endbuttons %}
 	</form>
-</div> 
+</div>
 {% endblock %}
 
 {% block content-related %}

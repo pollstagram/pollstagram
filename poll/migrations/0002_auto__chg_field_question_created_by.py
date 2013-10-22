@@ -8,20 +8,14 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Answer.question'
-        db.delete_column(u'poll_answer', 'question_id')
 
+        # Changing field 'Question.created_by'
+        db.alter_column(u'poll_question', 'created_by_id', self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['auth.User']))
 
     def backwards(self, orm):
 
-        # User chose to not deal with backwards NULL issues for 'Answer.question'
-        raise RuntimeError("Cannot reverse this migration. 'Answer.question' and its values cannot be restored.")
-        
-        # The following code is provided here to aid in writing a correct migration        # Adding field 'Answer.question'
-        db.add_column(u'poll_answer', 'question',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['poll.Question']),
-                      keep_default=False)
-
+        # Changing field 'Question.created_by'
+        db.alter_column(u'poll_question', 'created_by_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True))
 
     models = {
         u'auth.group': {
@@ -63,7 +57,7 @@ class Migration(SchemaMigration):
         u'poll.answer': {
             'Meta': {'object_name': 'Answer'},
             'answer_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'choice': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['poll.Choice']"}),
+            'choice': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'answers'", 'to': u"orm['poll.Choice']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
@@ -77,7 +71,7 @@ class Migration(SchemaMigration):
             'content_markup': ('django.db.models.fields.TextField', [], {'max_length': '255'}),
             'content_rawtext': ('django.db.models.fields.TextField', [], {'max_length': '255'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['poll.Question']"})
+            'question': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'choices'", 'to': u"orm['poll.Question']"})
         },
         u'poll.mcqanswer': {
             'Meta': {'object_name': 'MCQAnswer', '_ormbases': [u'poll.Answer']},
@@ -88,7 +82,7 @@ class Migration(SchemaMigration):
             'content_markdown': ('django.db.models.fields.TextField', [], {'max_length': '255'}),
             'content_markup': ('django.db.models.fields.TextField', [], {'max_length': '255'}),
             'content_rawtext': ('django.db.models.fields.TextField', [], {'max_length': '255'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True'}),
+            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'published_time': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
         },

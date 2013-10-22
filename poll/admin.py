@@ -20,8 +20,12 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [ChoiceInline]
     list_display = ('content_markdown', 'published_time')
     list_filter = ['published_time']
-    search_fields = ['content_markdown']
+    search_fields = ['content_rawtext']
     date_hierarchy = 'published_time'
+    
+    def save_model(self, request, obj, form, change):
+        obj.created_by = request.user
+        obj.save()
 
 class ChoiceAdmin(admin.ModelAdmin):
     form = ChoiceForm

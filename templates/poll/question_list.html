@@ -1,0 +1,16 @@
+{% extends "poll/base.html" %}
+{% load voting_tags %} 
+{% load poll_tags %} 
+
+{% block content-detailed %}
+<div class="panel-group" id="accordion">
+{% for question in questions %}
+	{% if user|has_voted:question %}
+		{% include "includes/result.html" %}
+	{% else %}
+		{% include "includes/detail.html" %}
+	{% endif %}
+	<hr/>
+{% endfor %}
+</div>
+{% endblock %}
