@@ -159,6 +159,7 @@ INSTALLED_APPS = (
     'taggit',
     'voting',
     'crispy_forms',
+    'googlecharts',
 )
 # Set activation window for django-registration app
 ACCOUNT_ACTIVATION_DAYS = 7

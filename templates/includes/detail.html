@@ -1,4 +1,5 @@
-{% load voting_tags %} 
+{% load voting_tags %}
+{% load poll_tags %} 
 
 <div class="row">		
 	<div class="col-lg-1">
@@ -34,7 +35,9 @@
 				{{ question.content_markup|safe }}
 			</div>
 			<div id="temp_div">
-			{% block choices_info %}
+			{% if user|has_voted:question %}
+				{% include "includes/result.html" %}
+			{% else %}
 				<form class="poll_answer" method="post" action="{% url 'answer_create' %}" role="form">
 					{% csrf_token %}
 					<table class="table">
@@ -61,7 +64,7 @@
 						</tbody>
 					</table>
 				</form>
-			{% endblock %}		
+			{% endif %}		
 			</div>	
 			<div class="panel-footer">
 				created by <a href="/users/{{ question.created_by.username }}">{{ question.created_by.username }}</a> {{ question.published_time|timesince }} ago

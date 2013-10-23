@@ -1,5 +1,28 @@
 {% extends "poll/base.html" %}
 
+{% load googlecharts %}
+
 {% block content-detailed %}
 {% include "includes/result.html" %}
+{% endblock %}
+
+{% block scripts %}
+{% googlecharts %}
+    {# named data and options can be reused #}
+    {% data pie_data "out_data" %}
+        {% col "string" "Name" %}"{{ val }}"{% endcol %}
+        {% col "number" "Value" %}{{ val }}{% endcol %}
+    {% enddata %}
+    {# you can also use global javascript variables here, #}
+    {# and call functions #}
+    {% options "out_options" %}
+        kind: "PieChart",
+        options: {
+            width: 700,
+            height: 500
+        }
+    {% endoptions %}
+    {# chart is assembled from container, data and options #}
+    {% graph "advanced" "out_data" "out_options" %}
+{% endgooglecharts %}
 {% endblock %}

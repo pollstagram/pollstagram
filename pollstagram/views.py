@@ -33,6 +33,12 @@ class PollDetailView(DetailView):
     model = Question
     context_object_name = 'question'
 
+    def get_context_data(self, **kwargs):
+        context = super(PollDetailView, self).get_context_data(**kwargs)
+        context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
+        # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
+        return context
+
 class PollResultsView(DetailView):
     model = Question
     template_name = 'poll/question_result.html'
