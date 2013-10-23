@@ -14,7 +14,7 @@ class Question(models.Model):
     content_markdown = models.TextField(max_length=255, verbose_name=u'Content (markdown)')
     content_markup = models.TextField(max_length=255)
     content_rawtext = models.TextField(max_length=255)
-    created_by = models.ForeignKey(User)
+    created_by = models.ForeignKey(User, related_name='questions')
     published_time = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
     
@@ -88,6 +88,8 @@ class Answer(models.Model):
 
     def __unicode__(self):
         return u'"{choice}" chosen by "{user}" at {time}'.format(choice=unicode(self.choice), user=unicode(self.user), time=self.answer_time)
+
+
  
 class UserProfile(models.Model):
      user = models.OneToOneField(settings.AUTH_USER_MODEL)
