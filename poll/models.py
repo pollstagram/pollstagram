@@ -6,6 +6,7 @@ from taggit.managers import TaggableManager
 from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 from django.db.models.signals import post_save
+from voting.models import Vote
 
 # Create your models here.
 
@@ -20,12 +21,24 @@ class Question(models.Model):
     class Meta:
         ordering = ['-published_time']
     
+    def _ratings(self):
+        """
+        'score'     aggregated upvote/downvote score
+        'num_votes' total number of votes
+        """
+        return Vote.objects.get_score(self)
+    
     def save(self):
         self.content_markup = markdown(self.content_markdown, ['codehilite'])
         self.content_rawtext = ''.join(BeautifulSoup(self.content_markup).findAll(text=True))
         super(Question, self).save()
 
     def _results(self):
+        """
+        'count__anwers'     total number of answers
+        'max__num_answers'  number of answers of the most chosen answer of the question
+        'min__num_answers'  number of answers of the least chosen answer of the question
+        """
         result = self.choices.aggregate(Count('answers'))
         result.update(self.choices.annotate(num_answers=Count('answers')).aggregate(Max('num_answers'), Min('num_answers')))
         return result
@@ -40,6 +53,7 @@ class Question(models.Model):
         return self.content_rawtext
     
     results = property(_results)
+    ratings = property(_ratings)
     
 class Choice(models.Model):
     question = models.ForeignKey(Question, related_name='choices')
@@ -62,7 +76,7 @@ class Choice(models.Model):
         super(Choice, self).save()    
         
     def __unicode__(self):
-        return self.content_rawtext    
+        return self.content_rawtext
 
 class Answer(models.Model):
     choice = models.ForeignKey(Choice, related_name='answers')
