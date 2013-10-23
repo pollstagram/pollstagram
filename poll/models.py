@@ -74,6 +74,8 @@ class Answer(models.Model):
 
     def __unicode__(self):
         return u'"{choice}" chosen by "{user}" at {time}'.format(choice=unicode(self.choice), user=unicode(self.user), time=self.answer_time)
+
+
  
 class UserProfile(models.Model):
      user = models.OneToOneField(settings.AUTH_USER_MODEL)

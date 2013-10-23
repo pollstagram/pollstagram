@@ -35,5 +35,5 @@ urlpatterns = patterns('',
     (r'^accounts/', include('registration.backends.default.urls')),
 
     # Display a user account
-    url(r'^users/(?P<username>\w+)/$', views.PollDetailView.as_view(), name='poll_detail'),
+    #url(r'^users/(?P<username>\w+)/$', views.PollDetailView.as_view(), name='poll_detail'),
 )
