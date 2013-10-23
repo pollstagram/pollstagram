@@ -3,37 +3,30 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.http import HttpResponseRedirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import os, json
 
 from poll.models import Question, Answer
-from poll.forms import QuestionForm, AnswerForm, QuestionChoiceFormset
+from poll.forms import QuestionForm, AnswerForm, QuestionChoiceFormset, QuestionSearchForm
 
 class IndexView(ListView):
     model = Question
     context_object_name = 'questions'
+    paginate_by = 3
+    form_class = QuestionSearchForm
+    
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            return Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
+        return Question.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-    
-        if 'search' in self.request.GET and 'keyword' in self.request.GET:
-            keyword = self.request.GET['keyword']
-            context['questions_list'] = Question.objects.filter(content_rawtext__icontains = keyword)
-        else:
-            context['questions_list'] =  Question.objects.all()
-        # Only display a subset of questions each page (pagination)
-        paginator = Paginator(context['questions_list'], 2)
-        page = self.request.GET.get('page')
-        try:
-            context['questions'] = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            context['questions'] = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            context['questions'] = paginator.page(paginator.num_pages)
+        if self.request.GET:
+            context['search_form'] = QuestionSearchForm(self.request.GET)
+        else: 
+            context['search_form'] = QuestionSearchForm()
         return context
-
 
 class PollDetailView(DetailView):
     model = Question

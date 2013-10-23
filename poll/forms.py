@@ -1,8 +1,11 @@
 from pagedown.widgets import AdminPagedownWidget, PagedownWidget 
-from django.forms import ModelForm, Textarea
+from django.forms import Form, ModelForm, Textarea, CharField
 from django.forms.models import inlineformset_factory
 
 from models import Question, Choice, Answer
+
+class QuestionSearchForm(Form):
+    keyword = CharField()
 
 class QuestionForm(ModelForm):
     class Meta:
