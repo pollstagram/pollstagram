@@ -89,15 +89,13 @@ class Answer(models.Model):
     def __unicode__(self):
         return u'"{choice}" chosen by "{user}" at {time}'.format(choice=unicode(self.choice), user=unicode(self.user), time=self.answer_time)
 
-# 
-#  
-# class UserProfile(models.Model):
-#      user = models.OneToOneField(settings.AUTH_USER_MODEL)
-#      date_of_birth = models.DateField(null=True)
-#      gender = models.CharField(max_length=255)
-#      location = models.CharField(max_length=255)  
-#      bio = models.TextField(max_length=255)
-#      # TODO: avatar??
+class UserProfile(models.Model):
+     user = models.OneToOneField(settings.AUTH_USER_MODEL)
+     date_of_birth = models.DateField(null=True)
+     gender = models.CharField(max_length=255)
+     location = models.CharField(max_length=255)  
+     bio = models.TextField(max_length=255)
+     # TODO: avatar??
 # 
 # def create_user_profile(sender, instance, created, **kwargs):  
 #      if created:  
