@@ -7,6 +7,7 @@ from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 from django.db.models.signals import post_save
 from voting.models import Vote
+import math
 
 # Create your models here.
 
@@ -45,6 +46,12 @@ class Question(models.Model):
         
     def user_has_answered(self, user):
         return self.choices.filter(answers__user=user).exists()
+        
+    def choice_entropy(self):
+        N = self.results['count__answers']
+        ps = [c.num_votes()/float(N) for c in self.choices.all()]
+        return sum([-p*math.log(p) for p in ps])
+        # choises = Choise.object.filter(question = self.id)
         
     def last_active(self):
         pass    

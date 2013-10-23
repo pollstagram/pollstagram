@@ -17,7 +17,14 @@ class IndexView(ListView):
     def get_queryset(self):
         form = self.form_class(self.request.GET)
         if form.is_valid():
-            return Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
+            if form.cleaned_data['sortby'] == 'mostvoted':
+                return sorted(Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword']), key=lambda a: a.ratings['num_votes'])
+            elif form.cleaned_data['sortby'] == 'choisediff':
+                return sorted(Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword']), key=lambda a: a.results['max__num_answers'] - a.results['min__num_answers'])
+            elif form.cleaned_data['sortby'] == '5050question':
+                return sorted(Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword']), key=lambda a: -a.choise_entropy())
+            else:
+                return Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword']).order_by('published_time')
         return Question.objects.all()
 
     def get_context_data(self, **kwargs):
