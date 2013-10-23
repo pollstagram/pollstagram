@@ -22,6 +22,10 @@ class Question(models.Model):
         ordering = ['-published_time']
     
     def _ratings(self):
+        """
+        'score'     aggregated upvote/downvote score
+        'num_votes' total number of votes
+        """
         return Vote.objects.get_score(self)
     
     def save(self):
@@ -30,6 +34,11 @@ class Question(models.Model):
         super(Question, self).save()
 
     def _results(self):
+        """
+        'count__anwers'     total number of answers
+        'max__num_answers'  number of answers of the most chosen answer of the question
+        'min__num_answers'  number of answers of the least chosen answer of the question
+        """
         result = self.choices.aggregate(Count('answers'))
         result.update(self.choices.annotate(num_answers=Count('answers')).aggregate(Max('num_answers'), Min('num_answers')))
         return result
@@ -67,7 +76,7 @@ class Choice(models.Model):
         super(Choice, self).save()    
         
     def __unicode__(self):
-        return self.content_rawtext    
+        return self.content_rawtext
 
 class Answer(models.Model):
     choice = models.ForeignKey(Choice, related_name='answers')
