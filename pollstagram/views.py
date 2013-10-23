@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView
 from django.http import HttpResponseRedirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import os, json
 
 from poll.models import Question, Answer
@@ -11,6 +12,28 @@ from poll.forms import QuestionForm, AnswerForm, QuestionChoiceFormset
 class IndexView(ListView):
     model = Question
     context_object_name = 'questions'
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+    
+        if 'search' in self.request.GET and 'keyword' in self.request.GET:
+            keyword = self.request.GET['keyword']
+            context['questions_list'] = Question.objects.filter(content_rawtext__icontains = keyword)
+        else:
+            context['questions_list'] =  Question.objects.all()
+        # Only display a subset of questions each page (pagination)
+        paginator = Paginator(context['questions_list'], 2)
+        page = self.request.GET.get('page')
+        try:
+            context['questions'] = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            context['questions'] = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            context['questions'] = paginator.page(paginator.num_pages)
+        return context
+
 
 class PollDetailView(DetailView):
     model = Question
@@ -90,7 +113,19 @@ class PollCreateView(CreateView):
 def home(request):
     if 'search' in request.GET and 'keyword' in request.GET:
         keyword = request.GET['keyword']
-        results = Question.objects.filter(content_rawtext__icontains = keyword)
+        question_list = Question.objects.filter(content_rawtext__icontains = keyword)
     else:
-        results =  Question.objects.all()
-    return render(request, 'list.html', {'questions': results,})
+        question_list =  Question.objects.all()
+    # Only display a subset of questions each page (pagination)
+    paginator = Paginator(question_list, 5)
+    page = request.GET.get('page')
+    try:
+        questions = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        questions = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        questions = paginator.page(paginator.num_pages)
+
+    return render(request, 'list.html', {'questions': questions,})
