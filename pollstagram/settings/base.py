@@ -158,9 +158,12 @@ INSTALLED_APPS = (
     'south',
     'taggit',
     'voting',
+    'crispy_forms',
 )
 # Set activation window for django-registration app
 ACCOUNT_ACTIVATION_DAYS = 7
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
 DEFAULT_FROM_EMAIL = 'comp4920thu09@gmail.com'

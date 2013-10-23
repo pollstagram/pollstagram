@@ -6,6 +6,7 @@ from taggit.managers import TaggableManager
 from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 from django.db.models.signals import post_save
+from voting.models import Vote
 
 # Create your models here.
 
@@ -19,6 +20,9 @@ class Question(models.Model):
     
     class Meta:
         ordering = ['-published_time']
+    
+    def _ratings(self):
+        return Vote.objects.get_score(self)
     
     def save(self):
         self.content_markup = markdown(self.content_markdown, ['codehilite'])
@@ -40,6 +44,7 @@ class Question(models.Model):
         return self.content_rawtext
     
     results = property(_results)
+    ratings = property(_ratings)
     
 class Choice(models.Model):
     question = models.ForeignKey(Question, related_name='choices')
