@@ -6,7 +6,10 @@ South==0.8.2
 Unipath==1.0
 boto==2.13.3
 django-bootstrap3==1.0.0
+django-crispy-forms==1.4.0
+django-google-charts==0.1.1
 django-pagedown==0.0.4
+django-qsstats-magic==0.7.2
 django-registration==1.0
 django-ses==0.4.1
 django-social-auth==0.7.28
@@ -15,5 +18,11 @@ django-taggit==0.10
 django-voting==0.2
 httplib2==0.8
 oauth2==1.5.211
+python-dateutil==2.1
 python-openid==2.2.5
+six==1.4.1
+stevedore==0.12
+virtualenv==1.10.1
+virtualenv-clone==0.2.4
+virtualenvwrapper==4.1.1
 wsgiref==0.1.2
