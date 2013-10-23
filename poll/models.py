@@ -11,7 +11,7 @@ from voting.models import Vote
 # Create your models here.
 
 class Question(models.Model):
-    content_markdown = models.TextField(max_length=255)
+    content_markdown = models.TextField(max_length=255, verbose_name=u'Content (markdown)')
     content_markup = models.TextField(max_length=255)
     content_rawtext = models.TextField(max_length=255)
     created_by = models.ForeignKey(User)
@@ -57,7 +57,7 @@ class Question(models.Model):
     
 class Choice(models.Model):
     question = models.ForeignKey(Question, related_name='choices')
-    content_markdown = models.TextField(max_length=255)
+    content_markdown = models.TextField(max_length=255, verbose_name=u'Content (markdown)')
     content_markup = models.TextField(max_length=255)
     content_rawtext = models.TextField(max_length=255)
     
