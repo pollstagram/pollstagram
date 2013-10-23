@@ -40,6 +40,8 @@ class PollResultsView(DetailView):
 
 class UserDetailView(DetailView):
     model = User
+    slug_field = 'username'
+    template_name = 'poll/user_detail.html'
     context_object_name = 'user_detail'
 
 class AjaxableResponseMixin(object):

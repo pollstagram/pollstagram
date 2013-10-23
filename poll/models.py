@@ -14,7 +14,7 @@ class Question(models.Model):
     content_markdown = models.TextField(max_length=255)
     content_markup = models.TextField(max_length=255)
     content_rawtext = models.TextField(max_length=255)
-    created_by = models.ForeignKey(User)
+    created_by = models.ForeignKey(User, related_name='questions')
     published_time = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
     
