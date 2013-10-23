@@ -1,3 +1,5 @@
+{% load crispy_forms_tags %}
+
 <!-- Static navbar -->
 <div class="navbar navbar-default">
   <div class="navbar-header">
@@ -48,13 +50,7 @@
 		{% endif %}
     </ul>
 	{% if search_form %}
-	<form class="navbar-form navbar-right" role="search">
-     <div class="form-group">
-		{{ search_form.keyword }}
-        <!--<input type="text" class="form-control" placeholder="Search" name="keyword"> -->
-     </div>
-     <button type="submit" class="btn btn-default" name="search" value="search">Submit</button>
-    </form>
+	{% crispy search_form %}
 	{% endif %}
   </div><!--/.nav-collapse -->
 </div>
