@@ -5,6 +5,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.http import HttpResponseRedirect
 import os, json
 
+from django.contrib.auth.models import User
 from poll.models import Question, Answer
 from poll.forms import QuestionForm, AnswerForm, QuestionChoiceFormset, QuestionSearchForm
 
@@ -36,6 +37,10 @@ class PollResultsView(DetailView):
     model = Question
     template_name = 'poll/question_result.html'
     context_object_name = 'question'
+
+class UserDetailView(DetailView):
+    model = User
+    context_object_name = 'user_detail'
 
 class AjaxableResponseMixin(object):
     """
