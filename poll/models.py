@@ -12,10 +12,10 @@ import math
 # Create your models here.
 
 class Question(models.Model):
-    content_markdown = models.TextField(max_length=255)
+    content_markdown = models.TextField(max_length=255, verbose_name=u'Content (markdown)')
     content_markup = models.TextField(max_length=255)
     content_rawtext = models.TextField(max_length=255)
-    created_by = models.ForeignKey(User)
+    created_by = models.ForeignKey(User, related_name='questions')
     published_time = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
     
@@ -64,7 +64,7 @@ class Question(models.Model):
     
 class Choice(models.Model):
     question = models.ForeignKey(Question, related_name='choices')
-    content_markdown = models.TextField(max_length=255)
+    content_markdown = models.TextField(max_length=255, verbose_name=u'Content (markdown)')
     content_markup = models.TextField(max_length=255)
     content_rawtext = models.TextField(max_length=255)
     
@@ -95,7 +95,7 @@ class Answer(models.Model):
 
     def __unicode__(self):
         return u'"{choice}" chosen by "{user}" at {time}'.format(choice=unicode(self.choice), user=unicode(self.user), time=self.answer_time)
- 
+
 class UserProfile(models.Model):
      user = models.OneToOneField(settings.AUTH_USER_MODEL)
      date_of_birth = models.DateField(null=True)
@@ -103,12 +103,12 @@ class UserProfile(models.Model):
      location = models.CharField(max_length=255)  
      bio = models.TextField(max_length=255)
      # TODO: avatar??
-
-def create_user_profile(sender, instance, created, **kwargs):  
-     if created:  
-         profile, created = UserProfile.objects.get_or_create(user=instance)   
-
-post_save.connect(create_user_profile, sender=User) 
+# 
+# def create_user_profile(sender, instance, created, **kwargs):  
+#      if created:  
+#          profile, created = UserProfile.objects.get_or_create(user=instance)   
+# 
+# post_save.connect(create_user_profile, sender=User) 
         
 class BinaryAnswer(Answer):
     pass

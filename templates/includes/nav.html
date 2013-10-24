@@ -8,15 +8,13 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="#">Pollstagram</a>
+    <a class="navbar-brand" href="/">Pollstagram</a>
   </div>
   <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
-      <li><a href="#">Link</a></li>
+      <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></a></li>
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span> Options <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="#">Action</a></li>
           <li><a href="#">Another action</a></li>
@@ -27,25 +25,24 @@
           <li><a href="#">One more separated link</a></li>
         </ul>
       </li>
+      <li><a href="#"><span class="glyphicon glyphicon-info-sign"></span> About</a></a></li>
 	</ul>
 	<ul class="nav navbar-nav navbar-right">
-		<li class="active"><a href="./">Default</a></li>
-		<li><a href="../navbar-static-top/">Static top</a></li>
+		<li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
 		{% if user.is_authenticated %}
 		<li class="dropdown">
 	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 					<span class="glyphicon glyphicon-user"></span> {{ user.username }} <b class="caret"></b></a>
 	        <ul class="dropdown-menu">
-	          <li><a href="#">Action</a></li>
-	          <li><a href="#">Another action</a></li>
-              <li><a href="{% url 'auth_password_change' %}" target="_blank">Change password</a></li>
+	          <li><a href="#"><span class="glyphicon glyphicon-edit"></span> Edit Profile</a></li>
+              <li><a href="{% url 'auth_password_change' %}" target="_blank"><span class="glyphicon glyphicon-lock"></span> Change password</a></li>
 	          <li class="divider"></li>
-              <li><a href="{% url 'auth_logout' %}">Logout</a></li>
+              <li><a href="{% url 'auth_logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 	        </ul>
 		</li>
 		{% else %}
 		<li>
-			<a href="{% url 'auth_login' %}">Login</a>
+			<a href="{% url 'auth_login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a>
 		</li>
 		{% endif %}
     </ul>
@@ -64,13 +61,14 @@
 <div class="row">
 	<div class="col-lg-9">	
 	<ul class="nav nav-pills">
-	  <li class="active"><a href="#">Questions</a></li>
-	  <li><a href="#">Tags</a></li>
+	  <li><a href="{% url 'polls_index' %}">Questions</a></li>
+	  <li><a href="{% url 'tags_index' %}">Tags</a></li>
 	  <li><a href="#">Users</a></li>
 	</ul>
 	</div>
 	<div class="col-lg-3">
 		<div class="pull-right">
+<<<<<<< HEAD
 		    <div class="btn-group">
         	        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                         Sort By
@@ -84,6 +82,9 @@
                     </ul>
             </div>
 			<a href="{% url 'poll_create' %}" type="button" class="btn btn-primary">Ask a Question</a>
+=======
+			<a href="{% url 'poll_create' %}" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-question-sign"></span> Ask a Question</a>
+>>>>>>> fff0458d80d0a5aee9e9b8603d461bb367d0dd71
 		</div>
 	</div>
 

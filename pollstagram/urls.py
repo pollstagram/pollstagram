@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from pollstagram import views
 from poll.models import Question
+from taggit.models import Tag
 from voting.views import vote_on_object
 
 # Uncomment the next two lines to enable the admin:
@@ -13,7 +14,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', views.IndexView.as_view(), name='home'),
-
+    url(r'^polls/$', views.IndexView.as_view(), name='polls_index'),
+    url(r'^tags/$', views.ListView.as_view(model=Tag, context_object_name = 'tags'), name='tags_index'),
     # Generic view to vote on Link objects
     url(r'^polls/(?P<object_id>\d+)/(?P<direction>up|down|clear)vote/?$', 
         vote_on_object, 
@@ -35,5 +37,5 @@ urlpatterns = patterns('',
     (r'^accounts/', include('registration.backends.default.urls')),
 
     # Display a user account
-    url(r'^users/(?P<username>\w+)/$', views.PollDetailView.as_view()),
+    url(r'^users/(?P<slug>\w+)/$', views.UserDetailView.as_view(), name='user_detail'),
 )

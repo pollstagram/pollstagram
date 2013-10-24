@@ -2,13 +2,38 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-lg-10">
+	<div class="col-lg-9">
 	{% block content-detailed %}
 	{% endblock %}
 	</div>
-	<div class="col-lg-2">
+	<div class="col-lg-3">
 	{% block sidebar %}
-		Sidebar here please...
+	<ul class="list-group">
+		<li class="list-group-item">
+			<span class="badge">{{ questions.count }}</span>
+			Questions
+		</li>
+		<li class="list-group-item">
+	    	<span class="badge">2</span>
+			Questions today
+	  	</li>
+		<li class="list-group-item">
+	    	<span class="badge">2</span>
+			Unanswered questions
+	  	</li>
+		<li class="list-group-item">
+	    	<span class="badge">1</span>
+			Answered questions
+	  	</li>
+		<li class="list-group-item">
+	    	<span class="badge">2</span>
+			You've answered
+	  	</li>
+		<li class="list-group-item">
+	    	<span class="badge">0</span>
+			You've asked
+	  	</li>
+	</ul>
 	{% endblock %}
 	</div>
 </div>
