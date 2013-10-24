@@ -7,6 +7,7 @@ from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 from django.db.models.signals import post_save
 from voting.models import Vote
+from django_countries import CountryField
 
 # Create your models here.
 
@@ -93,15 +94,15 @@ class UserProfile(models.Model):
      user = models.OneToOneField(settings.AUTH_USER_MODEL)
      date_of_birth = models.DateField(null=True)
      gender = models.CharField(max_length=255)
-     location = models.CharField(max_length=255)  
+     country = CountryField()  
      bio = models.TextField(max_length=255)
      # TODO: avatar??
-# 
-# def create_user_profile(sender, instance, created, **kwargs):  
-#      if created:  
-#          profile, created = UserProfile.objects.get_or_create(user=instance)   
-# 
-# post_save.connect(create_user_profile, sender=User) 
+ 
+def create_user_profile(sender, instance, created, **kwargs):  
+     if created:  
+         profile, created = UserProfile.objects.get_or_create(user=instance)   
+ 
+post_save.connect(create_user_profile, sender=User) 
         
 class BinaryAnswer(Answer):
     pass

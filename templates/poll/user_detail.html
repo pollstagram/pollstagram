@@ -13,26 +13,17 @@
 	<div class="panel-body">
 	<div class="row">
 		<div class="col-md-2">
-			<strong> First name: </strong>
+			<img class="media-object pull-left" width="100px" height="100px" src="{{ STATIC_URL }}default-avatar.png" alt="...">
 		</div>
 		<div class="col-md-2">
-			{{ user_detail.first_name }}
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-2">
-			<strong> Last name: </strong>
+			<strong> First name: </strong><br>
+			<strong> Last name: </strong><br>
+			<strong> Email: </strong><br>
 		</div>
 		<div class="col-md-2">
-			{{ user_detail.last_name }}
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-2">
-			<strong> Email: </strong>
-		</div>
-		<div class="col-md-2">
-			{{ user_detail.email }}
+			{{ user_detail.first_name }} <br>
+			{{ user_detail.last_name }} <br>
+			{{ user_detail.email }} <br>
 		</div>
 	</div>
 	</div>
