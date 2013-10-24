@@ -48,6 +48,9 @@ class Question(models.Model):
         
     def last_active(self):
         pass    
+
+    def get_absolute_url(self):
+        return u'/polls/{pk}/'.format(pk=self.id)    
         
     def __unicode__(self):
         return self.content_rawtext

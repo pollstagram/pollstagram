@@ -15,16 +15,19 @@
 	{{ form.content_markdown|as_crispy_field }}	
 	{{ form.tags|as_crispy_field }}	
 	
-	{{ question_choice_formset.management_form }}
+	{{ choices.management_form }}
 	<h2>Choices</h2>
 	<table class="table table-striped">
         <tbody>
-		    {% for form in question_choice_formset.forms %}
+		    {% for form in choices.forms %}
 			<tr>
-				<td>								
+				<td>
 					{{ form.content_markdown }}
 				</td>
-				<td>{% if form.instance.pk %}{{ form.DELETE }}{% endif %}</td>
+				<td>
+					{{ form.id }}
+					{% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
