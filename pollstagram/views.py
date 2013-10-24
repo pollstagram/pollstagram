@@ -5,7 +5,6 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.http import HttpResponseRedirect
 import os, json
 
-from django.contrib.auth.models import User
 from poll.models import Question, Answer
 from poll.forms import QuestionForm, AnswerForm, QuestionChoiceFormset, QuestionSearchForm
 
@@ -25,54 +24,42 @@ class IndexView(ListView):
     #    # return sorted(questions, key=lambda q: q.ratings['num_votes'])
     #    # return sorted(questions, key=lambda q: q.published_time)
     
-    # def get_queryset(self):
-    #     form = self.form_class(self.request.GET)
-    #     if form.is_valid():
-    #         questions = Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
-    #     else:
-    #         questions = Question.objects.all()
-    #     try:
-    #         sortby = self.request.GET['sortby']
-    #     except KeyError:
-    #         sortby = ''
-    #     if sortby == 'mostvoted':
-    #         return sorted(questions, key=lambda a: a.ratings['num_votes'])
-    #     elif sortby == 'choisediff':
-    #         return sorted(questions, key=lambda a: a.results['num_answers__max'] - a.results['num_answers__min'])
-    #     elif sortby == '5050question':
-    #         return sorted(questions, key=lambda a: -a.choice_entropy())
-    #     else:
-    #         return questions.order_by('published_time')
-    #     return Question.objects.all()
-    # 
-    # def get_context_data(self, **kwargs):
-    #     context = super(IndexView, self).get_context_data(**kwargs)
-    #     if self.request.GET:
-    #         context['search_form'] = QuestionSearchForm(self.request.GET)
-    #     else: 
-    #         context['search_form'] = QuestionSearchForm()
-    #     return context
-      
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            questions = Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
+        else:
+            questions = Question.objects.all()
+        try:
+            sortby = self.request.GET['sortby']
+        except KeyError:
+            sortby = ''
+        if sortby == 'mostvoted':
+            return queryset(sorted(questions, key=lambda a: a.ratings['num_votes']))
+        elif sortby == 'choisediff':
+            return sorted(questions, key=lambda a: a.results['num_answers__max'] - a.results['num_answers__min'])
+        elif sortby == '5050question':
+            return sorted(questions, key=lambda a: -a.choice_entropy())
+        else:
+            return questions.order_by('published_time')
+        return Question.objects.all()
+    
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        if self.request.GET:
+            context['search_form'] = QuestionSearchForm(self.request.GET)
+        else: 
+            context['search_form'] = QuestionSearchForm()
+        return context
+
 class PollDetailView(DetailView):
     model = Question
     context_object_name = 'question'
-
-    def get_context_data(self, **kwargs):
-        context = super(PollDetailView, self).get_context_data(**kwargs)
-        context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
-        # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
-        return context
 
 class PollResultsView(DetailView):
     model = Question
     template_name = 'poll/question_result.html'
     context_object_name = 'question'
-
-class UserDetailView(DetailView):
-    model = User
-    slug_field = 'username'
-    template_name = 'poll/user_detail.html'
-    context_object_name = 'user_detail'
 
 class AjaxableResponseMixin(object):
     """
