@@ -15,15 +15,15 @@ class IndexView(ListView):
     paginate_by = 3
     form_class = QuestionSearchForm
     
-    def get_queryset(self):
-        questions = Question.objects.all()
-        qs = sorted(questions, key=lambda q: q.ratings['score'], reverse=True)
-        qss = []
-        for q in qs: qss.append(q)
-        return qss
-        #return sorted(questions, key=lambda q: q.ratings['score'], reverse=True)
-        # return sorted(questions, key=lambda q: q.ratings['num_votes'])
-        # return sorted(questions, key=lambda q: q.published_time)
+    #def get_queryset(self):
+    #    questions = Question.objects.all()
+    #    qs = sorted(questions, key=lambda q: q.ratings['score'], reverse=True)
+    #    qss = []
+    #    for q in qs: qss.append(q)
+    #    return qss
+    #    #return sorted(questions, key=lambda q: q.ratings['score'], reverse=True)
+    #    # return sorted(questions, key=lambda q: q.ratings['num_votes'])
+    #    # return sorted(questions, key=lambda q: q.published_time)
     
     # def get_queryset(self):
     #     form = self.form_class(self.request.GET)
@@ -52,7 +52,7 @@ class IndexView(ListView):
     #     else: 
     #         context['search_form'] = QuestionSearchForm()
     #     return context
-
+      
 class PollDetailView(DetailView):
     model = Question
     context_object_name = 'question'

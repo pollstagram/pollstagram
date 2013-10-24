@@ -13,15 +13,3 @@ class Command(BaseCommand):
         print c.percent_all_votes()
         print Vote.objects.get_score(q)
         qs = Question.objects.all()
-<<<<<<< HEAD
-        print type(qs)
-        for q in qs: print q.ratings['score'], q
-        qs = sorted(qs, key=lambda q: q.ratings['score'], reverse=True)
-        print type(qs)
-        print '###'
-        for q in qs: print q.ratings['score'], q
-=======
-        sorted_id_list = [q.id for q in sorted(qs, key=lambda q: q.ratings['score'], reverse=True)]
-        print sorted_id_list
-        print [(q.ratings['score'], q.id, q ) for q in Question.objects.filter(pk__in=sorted_id_list)]
->>>>>>> fff0458d80d0a5aee9e9b8603d461bb367d0dd71
