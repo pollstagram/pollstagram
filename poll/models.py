@@ -29,10 +29,10 @@ class Question(models.Model):
         """
         return Vote.objects.get_score(self)
     
-    def save(self):
+    def save(self, *args, **kwargs):
         self.content_markup = markdown(self.content_markdown, ['codehilite'])
         self.content_rawtext = ''.join(BeautifulSoup(self.content_markup).findAll(text=True))
-        super(Question, self).save()
+        super(Question, self).save(*args, **kwargs)
 
     def _results(self):
         """
@@ -49,6 +49,9 @@ class Question(models.Model):
         
     def last_active(self):
         pass    
+
+    def get_absolute_url(self):
+        return u'/polls/{pk}/'.format(pk=self.id)    
         
     def __unicode__(self):
         return self.content_rawtext
@@ -71,10 +74,10 @@ class Choice(models.Model):
     def user_has_chosen(self, user):
         return self.answers.filter(user=user).exists()
             
-    def save(self):
+    def save(self, *args, **kwargs):
         self.content_markup = markdown(self.content_markdown, ['codehilite'])
         self.content_rawtext = ''.join(BeautifulSoup(self.content_markup).findAll(text=True))
-        super(Choice, self).save()    
+        super(Choice, self).save(*args, **kwargs)    
         
     def __unicode__(self):
         return self.content_rawtext

@@ -166,6 +166,8 @@ ACCOUNT_ACTIVATION_DAYS = 7
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+SOUTH_TESTS_MIGRATE = False
+
 EMAIL_BACKEND = 'django_ses.SESBackend'
 DEFAULT_FROM_EMAIL = 'comp4920thu09@gmail.com'
 
