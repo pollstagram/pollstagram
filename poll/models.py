@@ -36,9 +36,9 @@ class Question(models.Model):
 
     def _results(self):
         """
-        'count__anwers'     total number of answers
-        'max__num_answers'  number of answers of the most chosen answer of the question
-        'min__num_answers'  number of answers of the least chosen answer of the question
+        'answers__count'     total number of answers
+        'num_answers__max'  number of answers of the most chosen answer of the question
+        'num_answers__min'  number of answers of the least chosen answer of the question
         """
         result = self.choices.aggregate(Count('answers'))
         result.update(self.choices.annotate(num_answers=Count('answers')).aggregate(Max('num_answers'), Min('num_answers')))
@@ -48,9 +48,9 @@ class Question(models.Model):
         return self.choices.filter(answers__user=user).exists()
         
     def choice_entropy(self):
-        N = self.results['count__answers']
+        N = self.results['answers__count']
         ps = [c.num_votes()/float(N) for c in self.choices.all()]
-        return sum([-p*math.log(p) for p in ps])
+        return sum([-p*math.log(p) for p in ps if p])
         # choises = Choise.object.filter(question = self.id)
         
     def last_active(self):

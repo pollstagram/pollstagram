@@ -12,3 +12,10 @@ class Command(BaseCommand):
         print q.user_has_answered(u)
         print c.percent_all_votes()
         print Vote.objects.get_score(q)
+        qs = Question.objects.all()
+        print type(qs)
+        for q in qs: print q.ratings['score'], q
+        qs = sorted(qs, key=lambda q: q.ratings['score'], reverse=True)
+        print type(qs)
+        print '###'
+        for q in qs: print q.ratings['score'], q

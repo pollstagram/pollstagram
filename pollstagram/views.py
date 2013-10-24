@@ -15,25 +15,42 @@ class IndexView(ListView):
     form_class = QuestionSearchForm
     
     def get_queryset(self):
-        form = self.form_class(self.request.GET)
-        if form.is_valid():
-            if form.cleaned_data['sortby'] == 'mostvoted':
-                return sorted(Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword']), key=lambda a: a.ratings['num_votes'])
-            elif form.cleaned_data['sortby'] == 'choisediff':
-                return sorted(Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword']), key=lambda a: a.results['max__num_answers'] - a.results['min__num_answers'])
-            elif form.cleaned_data['sortby'] == '5050question':
-                return sorted(Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword']), key=lambda a: -a.choise_entropy())
-            else:
-                return Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword']).order_by('published_time')
-        return Question.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
-        if self.request.GET:
-            context['search_form'] = QuestionSearchForm(self.request.GET)
-        else: 
-            context['search_form'] = QuestionSearchForm()
-        return context
+        questions = Question.objects.all()
+        qs = sorted(questions, key=lambda q: q.ratings['score'], reverse=True)
+        qss = []
+        for q in qs: qss.append(q)
+        return qss
+        #return sorted(questions, key=lambda q: q.ratings['score'], reverse=True)
+        # return sorted(questions, key=lambda q: q.ratings['num_votes'])
+        # return sorted(questions, key=lambda q: q.published_time)
+    
+    # def get_queryset(self):
+    #     form = self.form_class(self.request.GET)
+    #     if form.is_valid():
+    #         questions = Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
+    #     else:
+    #         questions = Question.objects.all()
+    #     try:
+    #         sortby = self.request.GET['sortby']
+    #     except KeyError:
+    #         sortby = ''
+    #     if sortby == 'mostvoted':
+    #         return sorted(questions, key=lambda a: a.ratings['num_votes'])
+    #     elif sortby == 'choisediff':
+    #         return sorted(questions, key=lambda a: a.results['num_answers__max'] - a.results['num_answers__min'])
+    #     elif sortby == '5050question':
+    #         return sorted(questions, key=lambda a: -a.choice_entropy())
+    #     else:
+    #         return questions.order_by('published_time')
+    #     return Question.objects.all()
+    # 
+    # def get_context_data(self, **kwargs):
+    #     context = super(IndexView, self).get_context_data(**kwargs)
+    #     if self.request.GET:
+    #         context['search_form'] = QuestionSearchForm(self.request.GET)
+    #     else: 
+    #         context['search_form'] = QuestionSearchForm()
+    #     return context
 
 class PollDetailView(DetailView):
     model = Question
