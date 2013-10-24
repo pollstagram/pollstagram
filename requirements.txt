@@ -13,10 +13,11 @@ django-google-charts==0.1.1
 django-pagedown==0.0.4
 django-qsstats-magic==0.7.2
 django-registration==1.0
+django-reversion==1.7.1
 django-ses==0.4.1
 django-social-auth==0.7.28
 django-storages==1.1.8
-django-taggit==0.10
+-e git://github.com/alex/django-taggit#egg=django_taggit-dev
 django-voting==0.2
 httplib2==0.8
 oauth2==1.5.211

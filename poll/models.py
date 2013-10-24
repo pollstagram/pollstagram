@@ -17,7 +17,7 @@ class Question(models.Model):
     content_rawtext = models.TextField(max_length=255)
     created_by = models.ForeignKey(User, related_name='questions')
     published_time = models.DateTimeField(auto_now_add=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     
     class Meta:
         ordering = ['-published_time']
@@ -105,10 +105,4 @@ def create_user_profile(sender, instance, created, **kwargs):
      if created:  
          profile, created = UserProfile.objects.get_or_create(user=instance)   
  
-post_save.connect(create_user_profile, sender=User) 
-        
-class BinaryAnswer(Answer):
-    pass
-    
-class MCQAnswer(Answer):
-    pass
+post_save.connect(create_user_profile, sender=User)

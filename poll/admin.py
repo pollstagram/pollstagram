@@ -4,13 +4,14 @@ from django.contrib.auth.models import User
 from poll.models import UserProfile
 from poll.models import Question, Choice, Answer
 from poll.forms import QuestionForm, ChoiceForm
+import reversion
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
     form = ChoiceForm
     extra = 2
 
-class QuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(reversion.VersionAdmin):
     form = QuestionForm
     readonly_fields = ('published_time',)
     fieldsets = [
@@ -27,7 +28,7 @@ class QuestionAdmin(admin.ModelAdmin):
         obj.created_by = request.user
         obj.save()
 
-class ChoiceAdmin(admin.ModelAdmin):
+class ChoiceAdmin(reversion.VersionAdmin):
     form = ChoiceForm
 
 # Define an inline admin descriptor for the UserProfile model
