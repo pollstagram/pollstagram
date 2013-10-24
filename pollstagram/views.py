@@ -26,6 +26,10 @@ class PollCreateView(NamedFormsetsMixin, CreateWithInlinesView):
     form_class = QuestionForm
     inlines = [ChoiceInline,]
     inlines_names = ['choices']
+        
+    def forms_valid(self, form, inlines):
+        form.instance.created_by = self.request.user
+        return super(PollCreateView, self).forms_valid(form, inlines)
 
 class IndexView(ListView):
     model = Question
