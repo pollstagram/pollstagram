@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^$', views.IndexView.as_view(), name='home'),
     url(r'^polls/$', views.IndexView.as_view(), name='polls_index'),
     url(r'^tags/$', views.ListView.as_view(model=Tag, context_object_name = 'tags'), name='tags_index'),
+    url(r'^tags/(?P<tag>[\w\+\-\']+)/$', views.IndexView.as_view(), name='tags_questions'),
     # Generic view to vote on Link objects
     url(r'^polls/(?P<object_id>\d+)/(?P<direction>up|down|clear)vote/?$', 
         vote_on_object, 
