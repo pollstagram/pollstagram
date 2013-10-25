@@ -1,13 +1,35 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.http import HttpResponseRedirect
+from extra_views import InlineFormSet, CreateWithInlinesView, UpdateWithInlinesView, NamedFormsetsMixin
+from extra_views.generic import GenericInlineFormSet
 import os, json
 
 from django.contrib.auth.models import User
-from poll.models import Question, Answer
-from poll.forms import QuestionForm, AnswerForm, QuestionChoiceFormset, QuestionSearchForm
+from poll.models import Question, Choice, Answer
+from poll.forms import QuestionForm, AnswerForm, ChoiceForm, QuestionChoiceFormset, QuestionSearchForm
+
+class ChoiceInline(InlineFormSet):
+    model = Choice
+    form_class = ChoiceForm
+
+class PollUpdateView(NamedFormsetsMixin, UpdateWithInlinesView):
+    model = Question
+    form_class = QuestionForm
+    inlines = [ChoiceInline,]
+    inlines_names = ['choices']
+
+class PollCreateView(NamedFormsetsMixin, CreateWithInlinesView):
+    model = Question
+    form_class = QuestionForm
+    inlines = [ChoiceInline,]
+    inlines_names = ['choices']
+        
+    def forms_valid(self, form, inlines):
+        form.instance.created_by = self.request.user
+        return super(PollCreateView, self).forms_valid(form, inlines)
 
 
 class IndexView(ListView):
@@ -90,33 +112,6 @@ class AnswerCreateView(AjaxableResponseMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(AnswerCreateView, self).form_valid(form)
-
-class PollCreateView(CreateView):
-    form_class = QuestionForm
-    model = Question
-    
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
-        context = self.get_context_data()
-        question_choice_form = context['question_choice_formset']
-        if question_choice_form.is_valid():
-            self.object = form.save()
-            question_choice_form.instance = self.object
-            question_choice_form.save()
-            return HttpResponseRedirect('/')
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
-            
-    def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
-
-    def get_context_data(self, **kwargs):
-        context = super(PollCreateView, self).get_context_data(**kwargs)
-        if self.request.POST:
-            context['question_choice_formset'] = QuestionChoiceFormset(self.request.POST)
-        else: 
-            context['question_choice_formset'] = QuestionChoiceFormset()
-        return context
         
 def home(request):
     if 'search' in request.GET and 'keyword' in request.GET:

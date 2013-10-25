@@ -8,6 +8,7 @@ from BeautifulSoup import BeautifulSoup
 from django.db.models.signals import post_save
 from voting.models import Vote
 import math
+from django_countries import CountryField
 
 # Create your models here.
 
@@ -17,7 +18,7 @@ class Question(models.Model):
     content_rawtext = models.TextField(max_length=255)
     created_by = models.ForeignKey(User, related_name='questions')
     published_time = models.DateTimeField(auto_now_add=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     
     class Meta:
         ordering = ['-published_time']
@@ -55,6 +56,9 @@ class Question(models.Model):
         
     def last_active(self):
         pass    
+
+    def get_absolute_url(self):
+        return u'/polls/{pk}/'.format(pk=self.id)    
         
     def __unicode__(self):
         return self.content_rawtext
@@ -100,18 +104,12 @@ class UserProfile(models.Model):
      user = models.OneToOneField(settings.AUTH_USER_MODEL)
      date_of_birth = models.DateField(null=True)
      gender = models.CharField(max_length=255)
-     location = models.CharField(max_length=255)  
+     country = CountryField()  
      bio = models.TextField(max_length=255)
      # TODO: avatar??
-# 
-# def create_user_profile(sender, instance, created, **kwargs):  
-#      if created:  
-#          profile, created = UserProfile.objects.get_or_create(user=instance)   
-# 
-# post_save.connect(create_user_profile, sender=User) 
-        
-class BinaryAnswer(Answer):
-    pass
-    
-class MCQAnswer(Answer):
-    pass
+ 
+def create_user_profile(sender, instance, created, **kwargs):  
+     if created:  
+         profile, created = UserProfile.objects.get_or_create(user=instance)   
+ 
+post_save.connect(create_user_profile, sender=User)
