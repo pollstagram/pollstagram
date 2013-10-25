@@ -9,6 +9,7 @@ from django.db.models.signals import post_save
 from voting.models import Vote
 from django_countries import CountryField
 from registration.signals import user_registered
+import datetime
 
 # Create your models here.
 
@@ -18,7 +19,7 @@ class Question(models.Model):
     content_rawtext = models.TextField(max_length=255)
     created_by = models.ForeignKey(User, related_name='questions')
     published_time = models.DateTimeField(auto_now_add=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
     
     class Meta:
         ordering = ['-published_time']
@@ -112,15 +113,14 @@ class UserProfile(models.Model):
 #post_save.connect(create_user_profile, sender=User)
 def user_registered_callback(sender, user, request, **kwargs):
     profile = UserProfile(user = user)
-    profile.date_of_birth = request.POST['date_of_birth']
+    birth_year = request.POST['date_of_birth_year']
+    birth_month = request.POST['date_of_birth_month']
+    birth_day = request.POST['date_of_birth_day']
+    profile.date_of_birth = datetime.date(int(birth_year), 
+                                          int(birth_month), 
+					  int(birth_day))
     profile.gender = request.POST['gender']
     profile.bio = request.POST['bio']
     profile.save()
 
 user_registered.connect(user_registered_callback)
-        
-class BinaryAnswer(Answer):
-    pass
-    
-class MCQAnswer(Answer):
-    pass

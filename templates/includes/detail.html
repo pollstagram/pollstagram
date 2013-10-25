@@ -68,7 +68,9 @@
 			</div>	
 			<div class="panel-footer">
 				created by <a href="/users/{{ question.created_by.username }}">{{ question.created_by.username }}</a> {{ question.published_time|timesince }} ago
-				| <a href="/share">share</a>
+				| <a href="/share"><span class="glyphicon glyphicon-share"></span> share</a> 
+				| <a href="{% url 'poll_update' question.id %}"><span class="glyphicon glyphicon-edit"></span> edit</a>
+				| <span class="glyphicon glyphicon-trash"></span> delete
 			</div>
 		</div>
 	</div>
