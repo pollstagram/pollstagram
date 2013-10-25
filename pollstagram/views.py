@@ -5,6 +5,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.http import HttpResponseRedirect
 from extra_views import InlineFormSet, CreateWithInlinesView, UpdateWithInlinesView, NamedFormsetsMixin
 from extra_views.generic import GenericInlineFormSet
+from taggit.models import Tag
 import os, json
 
 from django.contrib.auth.models import User
@@ -31,7 +32,6 @@ class PollCreateView(NamedFormsetsMixin, CreateWithInlinesView):
         form.instance.created_by = self.request.user
         return super(PollCreateView, self).forms_valid(form, inlines)
 
-
 class IndexView(ListView):
     model = Question
     context_object_name = 'questions'
@@ -40,9 +40,13 @@ class IndexView(ListView):
     
     def get_queryset(self):
         form = self.form_class(self.request.GET)
+        questions = Question.objects.all()
+        if 'tag' in self.kwargs:
+            tag_list = self.kwargs['tag'].split('+')
+            questions = Question.objects.filter(tags__name__in=tag_list).distinct()
         if form.is_valid():
-            return Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
-        return Question.objects.all()
+            return questions.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
+        return questions
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -59,7 +63,7 @@ class PollDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PollDetailView, self).get_context_data(**kwargs)
         context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
-        context['related_questions'] = [1, 2, 3]#self.get_object().tags.similar_objects()
+        context['related_questions'] = self.get_object().tags.similar_objects()
         # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
         return context
 
