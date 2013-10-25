@@ -7,6 +7,9 @@ from poll.models import Question
 from taggit.models import Tag
 from voting.views import vote_on_object
 
+from poll.forms import UserProfileForm
+from registration.backends.default.views import RegistrationView
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -34,6 +37,11 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # Include django-registration views
+    # Custom user registration entry must appear BEFORE
+    # default
+    url(r'accounts/register/$', 
+            RegistrationView.as_view(form_class = UserProfileForm), 
+	            name = 'registration_register'),
     (r'^accounts/', include('registration.backends.default.urls')),
 
     # Display a user account
