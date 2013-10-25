@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from poll.models import Question, Answer
 from poll.forms import QuestionForm, AnswerForm, QuestionChoiceFormset, QuestionSearchForm
 
+
 class IndexView(ListView):
     model = Question
     context_object_name = 'questions'
@@ -36,6 +37,7 @@ class PollDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PollDetailView, self).get_context_data(**kwargs)
         context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
+        context['related_questions'] = self.get_object().tags.similar_objects()
         # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
         return context
 
