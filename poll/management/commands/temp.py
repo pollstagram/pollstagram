@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand, CommandError
+from dango.core.management.base import BaseCommand, CommandError
 from poll.models import Question, Choice, Answer
 from django.contrib.auth.models import User
 from voting.models import Vote
@@ -13,3 +13,5 @@ class Command(BaseCommand):
         print c.percent_all_votes()
         print Vote.objects.get_score(q)
         qs = Question.objects.all()
+        #qqs = Question.get(pk=2).tags.similar_objects()
+        #print qqs

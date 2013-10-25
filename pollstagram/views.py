@@ -59,7 +59,7 @@ class PollDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PollDetailView, self).get_context_data(**kwargs)
         context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
-        context['related_questions'] = self.get_object().tags.similar_objects()
+        context['related_questions'] = [1, 2, 3]#self.get_object().tags.similar_objects()
         # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
         return context
 
