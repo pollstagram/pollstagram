@@ -1,20 +1,62 @@
-from dango.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand, CommandError
 from poll.models import Question, Choice, Answer
 from django.contrib.auth.models import User
 from voting.models import Vote
+from reversion.helpers import generate_patch_html
 import pprint, reversion
+from itertools import tee, izip
+
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    next(b, None)
+    return izip(a, b)
 
 class Command(BaseCommand):
+        
     def handle(self, *args, **options):
-        pprint.pprint([(q.content_markdown, q.tags.all()) for q in Question.objects.get(pk=2).tags.similar_objects()])
-        print Question.objects.filter(tags__name='trivia')
-        q = Question.objects.get(pk=23)
-        print dir(reversion.get_unique_for_object(q)[0].object_repr)
-        u = User.objects.get(pk=1)
-        c = Choice.objects.get(pk=7)
-        q = Question.objects.get(pk=2)
-        print q.results
-        print q.user_has_answered(u)
-        print c.percent_all_votes()
-        print Vote.objects.get_score(q)
-        qs = Question.objects.all()
+        q = Question.objects.get(pk=24)
+        context = {}
+        context['versions'] = reversion.get_unique_for_object(q)
+        print context['versions'][0].revision.date_created
+        context['diffs'] = []
+        for i, (a, b) in enumerate(pairwise(reversed(context['versions']))):
+            temp = {}
+            temp['related'] = []
+            for j, (c, d) in enumerate(zip(a.revision.version_set.all(), b.revision.version_set.all())):
+                diff_patch = generate_patch_html(c, d, 'content_markdown', cleanup="semantic")
+                if not j:
+                    temp['primary'] = (diff_patch, d)
+                else:
+                    temp['related'].append((diff_patch, d))
+            context['diffs'].append(temp)
+        
+        pprint.pprint(context)
+        exit(0)
+        q = Question.objects.get(pk=24)
+        for i, (a, b) in enumerate(pairwise(reversed(reversion.get_unique_for_object(q)))):
+            for c, d in zip(a.revision.version_set.all(), b.revision.version_set.all()):
+                print generate_patch_html(c, d, 'content_markdown', cleanup="semantic")
+        
+        exit(0)
+        d = reversion.get_unique_for_object(q)[0]
+        print d.revision.version_set.all()
+        exit(0)
+        a, b = reversion.get_unique_for_object(q)[0:2]
+        print dir(b)
+        print a.object_version.object.choices.all()
+        print b.object_version.object.choices.all()
+        
+        print generate_patch_html(a, b, 'content_markdown', cleanup="semantic")
+        # pprint.pprint([(q.content_markdown, q.tags.all()) for q in Question.objects.get(pk=2).tags.similar_objects()])
+        #         print Question.objects.filter(tags__name='trivia')
+        #         q = Question.objects.get(pk=23)
+        #         print dir(reversion.get_unique_for_object(q)[0].object_repr)
+        #         u = User.objects.get(pk=1)
+        #         c = Choice.objects.get(pk=7)
+        #         q = Question.objects.get(pk=2)
+        #         print q.results
+        #         print q.user_has_answered(u)
+        #         print c.percent_all_votes()
+        #         print Vote.objects.get_score(q)
+        #         qs = Question.objects.all()

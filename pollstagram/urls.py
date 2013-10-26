@@ -29,6 +29,8 @@ urlpatterns = patterns('',
     url(r'^polls/create/$', login_required(views.PollCreateView.as_view()), name='poll_create'),
     url(r'^polls/(?P<pk>\d+)/$', views.PollDetailView.as_view(), name='poll_detail'),
     url(r'^polls/(?P<pk>\d+)/edit/$', login_required(views.PollUpdateView.as_view()), name='poll_update'),
+    url(r'^polls/(?P<pk>\d+)/revisions/$', views.PollRevisionDetailView.as_view(), name='poll_revisions'),
+    
     url(r'^test/', TemplateView.as_view(template_name="test.html")),
 
     # Uncomment the admin/doc line below to enable admin documentation:

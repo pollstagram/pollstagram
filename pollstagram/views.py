@@ -6,10 +6,18 @@ from django.http import HttpResponseRedirect
 from extra_views import InlineFormSet, CreateWithInlinesView, UpdateWithInlinesView, NamedFormsetsMixin
 from extra_views.generic import GenericInlineFormSet
 import os, json, reversion
+from reversion.helpers import generate_patch_html
 
 from django.contrib.auth.models import User
 from poll.models import Question, Choice, Answer
 from poll.forms import QuestionForm, AnswerForm, ChoiceForm, QuestionChoiceFormset, QuestionSearchForm
+from itertools import tee, izip
+
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    next(b, None)
+    return izip(a, b)
 
 class ChoiceInline(InlineFormSet):
     model = Choice
@@ -59,6 +67,27 @@ class PollDetailView(DetailView):
     model = Question
     context_object_name = 'question'
 
+    def get_context_data(self, **kwargs):
+        context = super(PollDetailView, self).get_context_data(**kwargs)
+        context['pie_data'] = [[', '.join(choice.content_rawtext.splitlines()), choice.num_votes()] for choice in self.get_object().choices.all()]
+        context['versions'] = reversion.get_unique_for_object(self.get_object())
+        context['diffs'] = []
+        for a, b in pairwise(reversed(context['versions'])):
+            temp = {}
+            temp['related'] = []
+            for i, (c, d) in enumerate(zip(a.revision.version_set.all(), b.revision.version_set.all())):
+                diff_patch = generate_patch_html(c, d, 'content_markdown', cleanup="semantic")
+                if not i:
+                    temp['primary'] = diff_patch
+                else:
+                    temp['related'].append(diff_patch)
+            context['diffs'].append(temp)
+        context['diffs'].reverse()
+        return context
+        
+class PollRevisionDetailView(PollDetailView):
+    template_name = 'poll/question_revision.html'
+    
     def get_context_data(self, **kwargs):
         context = super(PollDetailView, self).get_context_data(**kwargs)
         context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]

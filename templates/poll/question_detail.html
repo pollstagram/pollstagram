@@ -32,8 +32,48 @@
 <div class="list-group">
     {% for related in question.tags.similar_objects %}
     <a href="{% url 'poll_detail' related.id %}" class="list-group-item">  
-    <h4 class="list-group-item-heading">{{ related.content_markdown|truncatewords:5 }}</h4>
-    <p class="list-group-item-text">{{ related.content_markdown }}</p>
+    <h4 class="list-group-item-heading">{{ related.content_rawtext }}</h4>
+    <p class="list-group-item-text">
+		<ol>
+		{% for choice in related.choices.all %}
+			<li>{{ choice.content_rawtext }}</li>
+		{% endfor %}
+		</ol>
+	</p>
+    </a>
+    {% endfor %}
+</div>
+<h4>Revision History</h4>
+<div class="list-group">
+	{% for diff in diffs %}
+	<a href="#" class="list-group-item">
+		<h4 class="list-group-item-heading">{{ diff.primary.0|safe }}</h4>
+		<p class="list-group-item-text">
+			<ol>
+			{% for related_diff in diff.related %}
+				<li>{{ related_diff.0|safe}}</li>
+			{% endfor %}
+			</ol>
+			
+		</p>
+	</a>    
+	{% endfor %}
+</div>
+<h4>Revision History</h4>
+<div class="list-group">
+    {% for version in versions %}
+    <a href="#" class="list-group-item">
+	{% for choice in version.revision.version_set.all %}
+		{% if forloop.first %}
+    	<h4 class="list-group-item-heading">{{ choice.field_dict.content_markup|safe }}</h4>
+		<p class="list-group-item-text">
+			<ol>
+    	{% else %}
+				<li>{{ choice.field_dict.content_markup|safe }}</li>
+		{% endif %}
+	{% endfor %}
+			</ol>
+		</p>
     </a>
     {% endfor %}
 </div>
