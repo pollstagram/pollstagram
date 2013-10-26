@@ -39,9 +39,13 @@ class IndexView(ListView):
     
     def get_queryset(self):
         form = self.form_class(self.request.GET)
+        questions = Question.objects.all()
+        if 'tag' in self.kwargs:
+            tag_list = self.kwargs['tag'].split('+')
+            questions = Question.objects.filter(tags__name__in=tag_list).distinct()
         if form.is_valid():
-            return Question.objects.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
-        return Question.objects.all()
+            return questions.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
+        return questions
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -59,7 +63,6 @@ class PollDetailView(DetailView):
         context = super(PollDetailView, self).get_context_data(**kwargs)
         context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
         context['revisions'] = reversion.get_unique_for_object(self.get_object())
-        # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
         return context
 
 class PollResultsView(DetailView):

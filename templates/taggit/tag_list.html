@@ -6,13 +6,20 @@
 
 <ul class="list-group">
 	{% for tag in tags %}
-	<li class="list-group-item">
+	<a href="{% url 'tags_questions' tag.name %}" class="list-group-item">
 		<span class="badge">{{ tag.taggit_taggeditem_items.count }}</span>
 		{{ tag }}
-	</li>
+	</a>
+	<!-- <div class="btn-group" data-toggle="buttons">
+      <label class="btn btn-default">
+        <input type="checkbox"> {{ tag }}
+        <span class="badge">{{ tag.taggit_taggeditem_items.count }}</span>
+      </label>
+    </div>-->
 	{% endfor %}
 </ul>
 </div>
+
 {% include "includes/pagination.html" %}
 {% endblock %}
 

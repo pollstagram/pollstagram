@@ -28,14 +28,14 @@
 		Active
   	</li>
 </ul>
-<h4>Revision History</h4>
+<h4>Related Questions</h4>
 <div class="list-group">
-	{% for revision in revisions %}
-  <a href="#" class="list-group-item">
-    <h4 class="list-group-item-heading">{{ revision.object_repr }}</h4>
-    <p class="list-group-item-text">{{ revision }}</p>
-  </a>
-	{% endfor %}
+    {% for related in question.tags.similar_objects %}
+    <a href="{% url 'poll_detail' related.id %}" class="list-group-item">  
+    <h4 class="list-group-item-heading">{{ related.content_markdown|truncatewords:5 }}</h4>
+    <p class="list-group-item-text">{{ related.content_markdown }}</p>
+    </a>
+    {% endfor %}
 </div>
 {% endblock %}
 

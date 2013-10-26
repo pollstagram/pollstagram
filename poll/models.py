@@ -7,7 +7,10 @@ from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 from django.db.models.signals import post_save
 from voting.models import Vote
+import math
 from django_countries import CountryField
+from registration.signals import user_registered
+import datetime
 
 # Create your models here.
 
@@ -36,9 +39,9 @@ class Question(models.Model):
 
     def _results(self):
         """
-        'count__anwers'     total number of answers
-        'max__num_answers'  number of answers of the most chosen answer of the question
-        'min__num_answers'  number of answers of the least chosen answer of the question
+        'answers__count'     total number of answers
+        'num_answers__max'  number of answers of the most chosen answer of the question
+        'num_answers__min'  number of answers of the least chosen answer of the question
         """
         result = self.choices.aggregate(Count('answers'))
         result.update(self.choices.annotate(num_answers=Count('answers')).aggregate(Max('num_answers'), Min('num_answers')))
@@ -46,6 +49,12 @@ class Question(models.Model):
         
     def user_has_answered(self, user):
         return self.choices.filter(answers__user=user).exists()
+        
+    def choice_entropy(self):
+        N = self.results['answers__count']
+        ps = [c.num_votes()/float(N) for c in self.choices.all()]
+        return sum([-p*math.log(p) for p in ps if p])
+        # choises = Choise.object.filter(question = self.id)
         
     def last_active(self):
         pass    
@@ -96,13 +105,24 @@ class Answer(models.Model):
 class UserProfile(models.Model):
      user = models.OneToOneField(settings.AUTH_USER_MODEL)
      date_of_birth = models.DateField(null=True)
-     gender = models.CharField(max_length=255)
+     gender = models.BooleanField()
      country = CountryField()  
      bio = models.TextField(max_length=255)
-     # TODO: avatar??
+     # TODO: avatar
+
+     def __unicode__(self):
+         return self.user
  
-def create_user_profile(sender, instance, created, **kwargs):  
-     if created:  
-         profile, created = UserProfile.objects.get_or_create(user=instance)   
- 
-post_save.connect(create_user_profile, sender=User)
+def user_registered_callback(sender, user, request, **kwargs):
+    profile = UserProfile(user = user)
+    birth_year = request.POST['date_of_birth_year']
+    birth_month = request.POST['date_of_birth_month']
+    birth_day = request.POST['date_of_birth_day']
+    profile.date_of_birth = datetime.date(int(birth_year), 
+                                          int(birth_month), 
+					  int(birth_day))
+    profile.gender = request.POST['gender']
+    profile.bio = request.POST['bio']
+    profile.save()
+
+user_registered.connect(user_registered_callback)
