@@ -6,6 +6,41 @@
 
 {% block content-detailed %}
 {% include "includes/detail.html" %}
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Diff Patch</th>
+			<th>Result</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for diff in diffs %}
+		<tr>
+			<td>
+			{{ forloop.counter }}	
+			</td>
+			<td>
+				{{ diff.primary.0|safe }}
+				<ol>
+				{% for related_diff in diff.related %}
+					<li>{{ related_diff.0|safe}}</li>
+				{% endfor %}
+				</ol>
+			</td>
+            <td>
+				{{ diff.primary.1.field_dict.content_markup|safe }}
+				<ol>
+				{% for related_diff in diff.related %}
+					<li>{{ related_diff.1.field_dict.content_markup|safe}}</li>
+				{% endfor %}
+				</ol>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
 {% endblock %}
 
 {% block sidebar %}
@@ -40,40 +75,6 @@
 		{% endfor %}
 		</ol>
 	</p>
-    </a>
-    {% endfor %}
-</div>
-<h4>Revision History</h4>
-<div class="list-group">
-	{% for diff in diffs %}
-	<a href="#" class="list-group-item">
-		<h4 class="list-group-item-heading">{{ diff.primary.0|safe }}</h4>
-		<p class="list-group-item-text">
-			<ol>
-			{% for related_diff in diff.related %}
-				<li>{{ related_diff.0|safe}}</li>
-			{% endfor %}
-			</ol>
-			
-		</p>
-	</a>    
-	{% endfor %}
-</div>
-<h4>Revision History</h4>
-<div class="list-group">
-    {% for version in versions %}
-    <a href="#" class="list-group-item">
-	{% for choice in version.revision.version_set.all %}
-		{% if forloop.first %}
-    	<h4 class="list-group-item-heading">{{ choice.field_dict.content_markup|safe }}</h4>
-		<p class="list-group-item-text">
-			<ol>
-    	{% else %}
-				<li>{{ choice.field_dict.content_markup|safe }}</li>
-		{% endif %}
-	{% endfor %}
-			</ol>
-		</p>
     </a>
     {% endfor %}
 </div>

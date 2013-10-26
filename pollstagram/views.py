@@ -72,15 +72,15 @@ class PollDetailView(DetailView):
         context['pie_data'] = [[', '.join(choice.content_rawtext.splitlines()), choice.num_votes()] for choice in self.get_object().choices.all()]
         context['versions'] = reversion.get_unique_for_object(self.get_object())
         context['diffs'] = []
-        for a, b in pairwise(reversed(context['versions'])):
+        for i, (a, b) in enumerate(pairwise(reversed(context['versions']))):
             temp = {}
             temp['related'] = []
-            for i, (c, d) in enumerate(zip(a.revision.version_set.all(), b.revision.version_set.all())):
+            for j, (c, d) in enumerate(zip(a.revision.version_set.all(), b.revision.version_set.all())):
                 diff_patch = generate_patch_html(c, d, 'content_markdown', cleanup="semantic")
-                if not i:
-                    temp['primary'] = diff_patch
+                if not j:
+                    temp['primary'] = (diff_patch, d)
                 else:
-                    temp['related'].append(diff_patch)
+                    temp['related'].append((diff_patch, d))
             context['diffs'].append(temp)
         context['diffs'].reverse()
         return context
