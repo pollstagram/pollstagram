@@ -5,7 +5,7 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.http import HttpResponseRedirect
 from extra_views import InlineFormSet, CreateWithInlinesView, UpdateWithInlinesView, NamedFormsetsMixin
 from extra_views.generic import GenericInlineFormSet
-import os, json
+import os, json, reversion
 
 from django.contrib.auth.models import User
 from poll.models import Question, Choice, Answer
@@ -58,6 +58,7 @@ class PollDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PollDetailView, self).get_context_data(**kwargs)
         context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
+        context['revisions'] = reversion.get_unique_for_object(self.get_object())
         # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
         return context
 
