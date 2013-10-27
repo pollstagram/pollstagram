@@ -103,7 +103,8 @@ class Answer(models.Model):
         return u'"{choice}" chosen by "{user}" at {time}'.format(choice=unicode(self.choice), user=unicode(self.user), time=self.answer_time)
 
 class UserProfile(models.Model):
-     user = models.OneToOneField(settings.AUTH_USER_MODEL)
+     user = models.OneToOneField(settings.AUTH_USER_MODEL, \
+                                 related_name='userprofile')
      date_of_birth = models.DateField(null=True)
      gender = models.BooleanField()
      country = CountryField()  
@@ -114,6 +115,13 @@ class UserProfile(models.Model):
          return self.user
  
 def user_registered_callback(sender, user, request, **kwargs):
+    # Save first and last name for user (not 
+    # saved by default)
+    user.first_name = request.POST['first_name']
+    user.last_name = request.POST['last_name']
+    user.save()
+
+    # Save custom user fields
     profile = UserProfile(user = user)
     birth_year = request.POST['date_of_birth_year']
     birth_month = request.POST['date_of_birth_month']
