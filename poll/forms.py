@@ -17,7 +17,7 @@ class UserProfileForm(RegistrationForm):
     first_name = forms.CharField(min_length=2, max_length=20)
     last_name = forms.CharField(min_length=2, max_length=20)
     date_of_birth = forms.DateField(widget=extras.SelectDateWidget(years=YEARS))
-    gender = forms.BooleanField(widget=RadioSelect(choices=GENDER_CHOICES))
+    gender = forms.CharField(widget=RadioSelect(choices=GENDER_CHOICES))
     bio = forms.CharField(max_length=255, widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):

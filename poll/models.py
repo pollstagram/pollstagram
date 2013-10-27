@@ -106,7 +106,7 @@ class UserProfile(models.Model):
      user = models.OneToOneField(settings.AUTH_USER_MODEL, \
                                  related_name='userprofile')
      date_of_birth = models.DateField(null=True)
-     gender = models.BooleanField()
+     gender = models.CharField(max_length=7)
      country = CountryField()  
      bio = models.TextField(max_length=255)
      # TODO: avatar
