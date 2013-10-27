@@ -16,6 +16,21 @@ class UserProfileForm(RegistrationForm):
     gender = forms.BooleanField(widget=RadioSelect(choices=GENDER_CHOICES))
     bio = forms.CharField(max_length=255, widget=forms.Textarea)
 
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        # TEMP: test changing size of input boxes here (not sure if 
+        # this is the best place to do it)
+        self.fields['username'].widget.attrs['class'] = 'RegistrationTextInput'
+	self.fields['email'].widget.attrs['class'] = 'RegistrationTextInput'
+	self.fields['password1'].widget.attrs['class'] = 'RegistrationTextInput'
+	self.fields['password2'].widget.attrs['class'] = 'RegistrationTextInput'
+	self.fields['date_of_birth'].widget.attrs['class'] = 'RegistrationDateInput'
+	self.fields['bio'].widget.attrs['class'] = 'RegistrationTextAreaInput'
+
+
+
+
+
 
 class QuestionSearchForm(Form): 
     keyword = CharField(widget=TextInput(attrs={'class': 'form-control', 'placeholder': 'Search', 'type': 'text'}))
