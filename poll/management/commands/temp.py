@@ -6,6 +6,13 @@ from reversion.helpers import generate_patch_html
 import pprint, reversion
 from itertools import tee, izip
 
+class Dummy(object):
+    pass
+
+dummy = Dummy()
+dummy.field_dict = {}
+dummy.field_dict['content_markdown'] = ''
+
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = tee(iterable)
@@ -20,6 +27,10 @@ class Command(BaseCommand):
         context['versions'] = reversion.get_unique_for_object(q)
         print context['versions'][0].revision.date_created
         context['diffs'] = []
+
+        for a in context['versions'][-1].revision.version_set.all():
+            print generate_patch_html(dummy, a, 'content_markdown', cleanup="semantic")
+            
         for i, (a, b) in enumerate(pairwise(reversed(context['versions']))):
             temp = {}
             temp['related'] = []
