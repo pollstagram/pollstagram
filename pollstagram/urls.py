@@ -47,6 +47,7 @@ urlpatterns = patterns('',
 
     # Display a user account
     url(r'^users/(?P<slug>\w+)/$', views.UserDetailView.as_view(), name='user_detail'),
+    url(r'^users/$', views.UserListView.as_view(), name='user_list'),
 
     # Edit profile page
     url(r'^users/(?P<slug>\w+)/edit/$', login_required(views.UserUpdateView.as_view()), name='user_edit'),

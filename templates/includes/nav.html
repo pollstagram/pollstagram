@@ -64,7 +64,7 @@
 	<ul class="nav nav-pills">
 	  <li><a href="{% url 'polls_index' %}">Questions</a></li>
 	  <li><a href="{% url 'tags_index' %}">Tags</a></li>
-	  <li><a href="#">Users</a></li>
+	  <li><a href="{% url 'user_list' %}">Users</a></li>
 	</ul>
 	</div>
 	<div class="col-lg-3">
@@ -76,8 +76,8 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li><a href="?sortby=newest">Newest</a></li>
-                        <li><a href="?sortby=mostvoted">Most voted</a></li>
-                        <li><a href="?sortby=choisediff">Choise difference</a></li>
+                        <li><a href="?sortby=mostvotes">Most votes</a></li>
+                        <li><a href="?sortby=mostpopular">Most popular</a></li>
                         <li><a href="?sortby=5050question">50-50 question</a></li>
                     </ul>
             </div>

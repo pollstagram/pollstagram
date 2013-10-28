@@ -2,7 +2,7 @@
 	<div class="text-center">
 		<ul class="pagination center">
 			{% if page_obj.has_previous %}
-				<li ><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+				<li ><a href="?page={{ page_obj.previous_page_number }}{{ sort_by }}">&laquo;</a></li>
 			{% else %}
 				<li class="disabled"><a>&laquo;</a></li>
 			{% endif %}
@@ -10,11 +10,11 @@
 				{% ifequal page_num page_obj.number %}
 					<li class="active"><a>{{ page_num }}</a></li>
 				{% else %}
-					<li><a href="?page={{ page_num }}">{{ page_num }}</a></li>	
+					<li><a href="?page={{ page_num }}{{ sort_by }}">{{ page_num }}</a></li>	
 					{% endifequal %}
 			{% endfor %}
 			{% if page_obj.has_next %}
-				<li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+				<li><a href="?page={{ page_obj.next_page_number }}{{ sort_by }}">&raquo;</a></li>
 			{% else %}
 				<li class="disabled"><a>&raquo;</a></li>
 			{% endif %}  

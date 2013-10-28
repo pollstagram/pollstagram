@@ -39,24 +39,57 @@ class IndexView(ListView):
     context_object_name = 'questions'
     paginate_by = 3
     form_class = QuestionSearchForm
+    template_name = 'poll/question_list.html'
     
     def get_queryset(self):
-        form = self.form_class(self.request.GET)
-        questions = Question.objects.all()
+        if 'keyword' in self.request.GET:
+            form = self.form_class(self.request.GET['keyword'])
+	else:
+	    form = self.form_class()
+	# Handle different possible orderings of question list
+	if 'sortby' in self.request.GET:
+	    questions = Question.sorted_by(self.request.GET['sortby'])
+	    print questions
+	else:
+            questions = Question.objects.all()
         if 'tag' in self.kwargs:
             tag_list = self.kwargs['tag'].split('+')
-            questions = Question.objects.filter(tags__name__in=tag_list).distinct()
+            questions = questions.filter(tags__name__in=tag_list).distinct()
         if form.is_valid():
-            return questions.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
+            questions = questions.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
         return questions
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-        if self.request.GET:
-            context['search_form'] = QuestionSearchForm(self.request.GET)
+	if 'sortby' in self.request.GET:
+	    context['sort_by'] = "&sortby=%s" % self.request.GET['sortby']
+        if 'keyword' in self.request.GET:
+            context['search_form'] = QuestionSearchForm(self.request.GET['keyword'])
         else: 
             context['search_form'] = QuestionSearchForm()
         return context
+
+class UserListView(ListView):
+    model = User
+    context_object_name = 'users'
+    paginate_by = 10
+    template_name = 'poll/user_list.html'
+    #form_class = QuestionSearchForm
+    
+    #def get_queryset(self):
+    #    form = self.form_class(self.request.GET)
+    #    users = User.objects.all()
+    #    if form.is_valid():
+    #        return users.filter(content_rawtext__icontains=form.cleaned_data['keyword'])
+    #    return users
+
+    #def get_context_data(self, **kwargs):
+    #    context = super(IndexView, self).get_context_data(**kwargs)
+    #    if self.request.GET:
+    #        context['search_form'] = QuestionSearchForm(self.request.GET)
+    #    else: 
+    #        context['search_form'] = QuestionSearchForm()
+    #    return context
 
 class PollDetailView(DetailView):
     model = Question

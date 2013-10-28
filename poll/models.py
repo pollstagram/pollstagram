@@ -24,6 +24,16 @@ class Question(models.Model):
     
     class Meta:
         ordering = ['-published_time']
+
+    @staticmethod
+    def sorted_by(criterion):
+        if criterion == 'mostpopular':
+            sorted_qs = sorted(Question.objects.all(), \
+	                       key=lambda q: Vote.objects.get_score(q), \
+			       reverse=True)
+	else:
+	    sorted_qs = Question.objects.all()
+        return sorted_qs
     
     def _ratings(self):
         """
