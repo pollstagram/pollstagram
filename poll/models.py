@@ -109,7 +109,7 @@ class UserProfile(models.Model):
      gender = models.CharField(max_length=7)
      country = CountryField()  
      bio = models.TextField(max_length=255)
-     # TODO: avatar
+     avatar = models.FileField(upload_to='avatars')
 
      def __unicode__(self):
          return self.user
@@ -131,6 +131,11 @@ def user_registered_callback(sender, user, request, **kwargs):
 					  int(birth_day))
     profile.gender = request.POST['gender']
     profile.bio = request.POST['bio']
+    # Model handles saving of file to filesystem automatically
+    # saves to upload_to argument
+    print request.POST
+    print request.FILES
+    profile.avatar = request.FILES['avatar']
     profile.save()
 
 user_registered.connect(user_registered_callback)

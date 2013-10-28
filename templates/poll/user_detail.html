@@ -14,7 +14,13 @@
 
 	<div class="row">
 		<div class="col-md-2">
-			<img class="media-object pull-left" width="100px" height="100px" src="{{ STATIC_URL }}default-avatar.png" alt="...">
+			{% if user_detail.userprofile.avatar.url != "" %}	
+				<img class="media-object pull-left" width="100px" 
+				     height="100px" src="{{ user_detail.userprofile.avatar.url }}" alt="...">
+			{% else %}
+				<img class="media-object pull-left" width="100px" 
+				     height="100px" src="{{ STATIC_URL }}default-avatar.png" alt="...">
+			{% endif %}
 		</div>
 		<div class="col-md-2">
 			<strong>

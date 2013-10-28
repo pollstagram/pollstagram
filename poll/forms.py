@@ -20,6 +20,9 @@ class UserProfileForm(RegistrationForm):
     date_of_birth = forms.DateField(widget=extras.SelectDateWidget(years=YEARS))
     gender = forms.CharField(widget=RadioSelect(choices=GENDER_CHOICES))
     bio = forms.CharField(max_length=255, widget=forms.Textarea)
+    avatar = forms.FileField(label='Select a file for avatar', \
+                             help_text='max. 42 megabytes', \
+			     required=False)
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
@@ -46,17 +49,6 @@ class UserEditForm(forms.ModelForm):
         exclude = ('username', 'password', 'last_login', 'date_joined', \
                    'user_permissions', 'is_staff', 'is_active', 'is_superuser', \
                    'groups',)
-
-    def __init__(self, *args, **kwargs):
-        super(UserEditForm, self).__init__(*args, **kwargs)
-        #self.fields['username'].widget = forms.HiddenInput()
-	#self.fields['password'].widget = forms.HiddenInput()
-	#self.fields['last_login'].widget = forms.HiddenInput()
-        
-	#self.fields['username'].required = False
-	#self.fields['password'].required = False
-	#self.fields['password2'].required = False
-	#print self.fields
 
 
 class QuestionSearchForm(Form): 
