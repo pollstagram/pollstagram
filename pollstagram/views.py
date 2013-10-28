@@ -85,23 +85,6 @@ class UserDetailView(DetailView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
-# Ideally we would just use UserDetailView
-class UserEditView(DetailView):
-    model = User
-    form_class = UserEditForm()
-    slug_field = 'username'
-    template_name = 'poll/user_edit.html'
-    context_object_name = 'user_detail'
-    def get_context_data(self, **kwargs):
-        context = super(UserEditView, self).get_context_data(**kwargs)
-        context['form'] = UserEditForm(initial={'username': context['user_detail'].username,
-						'email': context['user_detail'].email,
-	                                        'first_name': context['user_detail'].first_name, 
-						'last_name': context['user_detail'].last_name,
-						'date_of_birth': context['user_detail'].userprofile.date_of_birth,
-						'gender': context['user_detail'].userprofile.gender,
-						'bio': context['user_detail'].userprofile.bio,})
-        return context
 
 class UserUpdateView(UpdateView):
     form_class = UserEditForm
@@ -109,12 +92,9 @@ class UserUpdateView(UpdateView):
     slug_field = 'username'
     template_name = 'poll/user_edit.html'
     context_object_name = 'user_detail'
-    #success_url="poll/%(slug)s/"
 
     def get_success_url(self):
         return reverse_lazy('user_detail', kwargs={'slug': self.kwargs['slug']})
-    #def get_form_class(self):
-    #    return UserEditForm()
 
     def get_context_data(self, **kwargs):
         context = super(UserUpdateView, self).get_context_data(**kwargs)
