@@ -29,6 +29,11 @@
 		</div>
 	</div>
 	</div>
+	{% if user.is_authenticated %}
+	<div class="panel-footer">
+		<a href="{% url 'user_edit' user.username %}"><span class="glyphicon glyphicon-edit"></span> edit</a>
+	</div>
+	{% endif %}
 </div>
 
 <div>

@@ -1,6 +1,7 @@
 from pagedown.widgets import AdminPagedownWidget, PagedownWidget 
 from django.forms import Form, ModelForm, Textarea, CharField, TextInput, RadioSelect, extras
 from django.forms.models import inlineformset_factory
+from django.contrib.auth.models import User
 from registration.forms import RegistrationForm
 from django import forms
 
@@ -33,9 +34,29 @@ class UserProfileForm(RegistrationForm):
 	self.fields['date_of_birth'].widget.attrs['class'] = 'RegistrationDateInput'
 	self.fields['bio'].widget.attrs['class'] = 'RegistrationTextAreaInput'
 
+class UserEditForm(forms.ModelForm):
+    first_name = forms.CharField(min_length=2, max_length=20)
+    last_name = forms.CharField(min_length=2, max_length=20)
+    date_of_birth = forms.DateField(widget=extras.SelectDateWidget(years=YEARS))
+    gender = forms.CharField(widget=RadioSelect(choices=GENDER_CHOICES))
+    bio = forms.CharField(max_length=255, widget=forms.Textarea)
 
+    class Meta:
+        model = User
+        exclude = ('username', 'password', 'last_login', 'date_joined', \
+                   'user_permissions', 'is_staff', 'is_active', 'is_superuser', \
+                   'groups',)
 
-
+    def __init__(self, *args, **kwargs):
+        super(UserEditForm, self).__init__(*args, **kwargs)
+        #self.fields['username'].widget = forms.HiddenInput()
+	#self.fields['password'].widget = forms.HiddenInput()
+	#self.fields['last_login'].widget = forms.HiddenInput()
+        
+	#self.fields['username'].required = False
+	#self.fields['password'].required = False
+	#self.fields['password2'].required = False
+	#print self.fields
 
 
 class QuestionSearchForm(Form): 

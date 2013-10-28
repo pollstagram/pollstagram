@@ -7,7 +7,7 @@ from poll.models import Question
 from taggit.models import Tag
 from voting.views import vote_on_object
 
-from poll.forms import UserProfileForm
+from poll.forms import UserProfileForm, UserEditForm
 from registration.backends.default.views import RegistrationView
 
 # Uncomment the next two lines to enable the admin:
@@ -47,4 +47,7 @@ urlpatterns = patterns('',
 
     # Display a user account
     url(r'^users/(?P<slug>\w+)/$', views.UserDetailView.as_view(), name='user_detail'),
+
+    # Edit profile page
+    url(r'^users/(?P<slug>\w+)/edit/$', login_required(views.UserUpdateView.as_view()), name='user_edit'),
 )

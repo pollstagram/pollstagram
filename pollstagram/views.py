@@ -9,8 +9,10 @@ from taggit.models import Tag
 import os, json
 
 from django.contrib.auth.models import User
-from poll.models import Question, Choice, Answer
-from poll.forms import QuestionForm, AnswerForm, ChoiceForm, QuestionChoiceFormset, QuestionSearchForm
+from poll.models import Question, Choice, Answer, UserProfile
+from datetime import datetime
+from poll.forms import QuestionForm, AnswerForm, ChoiceForm, QuestionChoiceFormset, QuestionSearchForm, \
+                       UserEditForm
 
 class ChoiceInline(InlineFormSet):
     model = Choice
@@ -77,6 +79,84 @@ class UserDetailView(DetailView):
     slug_field = 'username'
     template_name = 'poll/user_detail.html'
     context_object_name = 'user_detail'
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
+
+# Ideally we would just use UserDetailView
+class UserEditView(DetailView):
+    model = User
+    form_class = UserEditForm()
+    slug_field = 'username'
+    template_name = 'poll/user_edit.html'
+    context_object_name = 'user_detail'
+    def get_context_data(self, **kwargs):
+        context = super(UserEditView, self).get_context_data(**kwargs)
+        context['form'] = UserEditForm(initial={'username': context['user_detail'].username,
+						'email': context['user_detail'].email,
+	                                        'first_name': context['user_detail'].first_name, 
+						'last_name': context['user_detail'].last_name,
+						'date_of_birth': context['user_detail'].userprofile.date_of_birth,
+						'gender': context['user_detail'].userprofile.gender,
+						'bio': context['user_detail'].userprofile.bio,})
+        return context
+
+class UserUpdateView(UpdateView):
+    form_class = UserEditForm
+    model = User
+    slug_field = 'username'
+    template_name = 'poll/user_edit.html'
+    context_object_name = 'user_detail'
+    #success_url="poll/%(slug)s/"
+
+    def get_success_url(self):
+        return reverse_lazy('user_detail', kwargs={'slug': self.kwargs['slug']})
+    #def get_form_class(self):
+    #    return UserEditForm()
+
+    def get_context_data(self, **kwargs):
+        context = super(UserUpdateView, self).get_context_data(**kwargs)
+        context['form'] = UserEditForm(initial={'username': context['user_detail'].username,
+						'email': context['user_detail'].email,
+	                                        'first_name': context['user_detail'].first_name, 
+						'last_name': context['user_detail'].last_name,
+						'date_of_birth': context['user_detail'].userprofile.date_of_birth,
+						'gender': context['user_detail'].userprofile.gender,
+						'bio': context['user_detail'].userprofile.bio,})
+        #context['action'] = reverse_lazy('user_detail', kwargs={'slug': context['user_detail'].username})
+        return context
+
+    def form_valid(self, form):
+        # Manually specifying saving logic
+        user = User.objects.get(username=self.kwargs['slug'])
+	user.first_name = form.cleaned_data['first_name']
+	user.last_name = form.cleaned_data['last_name']
+	user.email = form.cleaned_data['email']
+	#print form.cleaned_data
+	user.save()
+
+	# Save custom fields
+	userprofile = UserProfile.objects.get(user=user)
+        userprofile.date_of_birth = form.cleaned_data['date_of_birth']
+	userprofile.gender = form.cleaned_data['gender']
+	userprofile.bio = form.cleaned_data['bio']
+	userprofile.save()
+	return super(UserUpdateView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        #print "FORM INVALID"
+        user = User.objects.get(username=self.kwargs['slug'])
+        user.first_name = form.cleaned_data['first_name']
+        #print "USER FIRST_NAME: " + user.first_name
+	#print form.errors
+	#print form.cleaned_data
+	#print self.request.POST
+
+        return super(UserUpdateView, self).form_invalid(form)
+
+
 
 class AjaxableResponseMixin(object):
     """
