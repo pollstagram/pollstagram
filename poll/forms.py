@@ -3,6 +3,7 @@ from django.forms import Form, ModelForm, Textarea, CharField, TextInput, RadioS
 from django.forms.models import inlineformset_factory
 from registration.forms import RegistrationForm
 from django import forms
+from taggit.forms import TagWidget
 
 from models import Question, Choice, Answer
 
@@ -26,7 +27,7 @@ class QuestionForm(ModelForm):
         fields = ('content_markdown', 'tags')
         widgets = {
             'content_markdown': AdminPagedownWidget(),
-            'tags': TextInput(attrs={'class': 'form-control', 'placeholder': 'Tags', 'type': 'text'}),
+            'tags': TagWidget(attrs={'class': 'form-control', 'placeholder': 'Tags', 'type': 'text'}),
         }
 
 class ChoiceForm(ModelForm):
