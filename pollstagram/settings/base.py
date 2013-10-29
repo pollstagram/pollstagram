@@ -2,6 +2,7 @@
 
 import os
 from unipath import Path
+import django.conf.global_settings as DEFAULT_SETTINGS
 
 # Normally you should not import ANYTHING from Django directly
 # into your settings, but ImproperlyConfigured is an exception.
@@ -139,6 +140,9 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + (
+    'django.core.context_processors.request',
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
