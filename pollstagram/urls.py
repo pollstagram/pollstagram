@@ -17,6 +17,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', views.IndexView.as_view(), name='home'),
+    url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
     url(r'^polls/$', views.IndexView.as_view(), name='polls_index'),
     url(r'^tags/$', views.ListView.as_view(model=Tag, context_object_name = 'tags'), name='tags_index'),
     # section 2.3 of RFC 3986 safe and unreserverd url
@@ -33,8 +34,6 @@ urlpatterns = patterns('',
     url(r'^polls/(?P<pk>\d+)/edit/$', login_required(views.PollUpdateView.as_view()), name='poll_update'),
     url(r'^polls/(?P<pk>\d+)/revisions/$', views.PollRevisionDetailView.as_view(), name='poll_revisions'),
     
-    url(r'^test/', TemplateView.as_view(template_name="test.html")),
-
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

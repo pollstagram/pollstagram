@@ -8,6 +8,8 @@ from extra_views.generic import GenericInlineFormSet
 import os, json, reversion
 from reversion.helpers import generate_patch_html
 from django.forms.formsets import all_valid
+from datetime import datetime, date, time
+from django.db.models import Sum, Count, Max, Min
 
 from django.contrib.auth.models import User
 from poll.models import Question, Choice, Answer, UserProfile
@@ -54,16 +56,17 @@ class IndexView(ListView):
     template_name = 'poll/question_list.html'
     
     def get_queryset(self):
+        questions = Question.objects.all()
+	    
         if self.request.GET:
             form = self.form_class(self.request.GET)
-	else:
-	    form = self.form_class()
-	# Handle different possible orderings of question list
-	if 'sortby' in self.request.GET:
-	    questions = Question.sorted_by(self.request.GET['sortby'])
-	    print questions
-	else:
-            questions = Question.objects.all()
+        else:
+            form = self.form_class()
+	    
+	    # Handle different possible orderings of question list
+	    if 'sortby' in self.request.GET:
+	        questions = questions.sorted_by(self.request.GET['sortby'])
+	    
         if 'tag' in self.kwargs:
             tag_list = self.kwargs['tag'].split('+')
             questions = questions.filter(tags__name__in=tag_list).distinct()
@@ -73,12 +76,21 @@ class IndexView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-	if 'sortby' in self.request.GET:
-	    context['sort_by'] = "&sortby=%s" % self.request.GET['sortby']
+        if 'sortby' in self.request.GET:
+            context['sort_by'] = "&sortby=%s" % self.request.GET['sortby']
         if self.request.GET:
-            context['search_form'] = QuestionSearchForm(self.request.GET)
+            context['search_form'] = self.form_class(self.request.GET)
         else: 
-            context['search_form'] = QuestionSearchForm()
+            context['search_form'] = self.form_class()
+        
+        questions = Question.objects.all()
+        today_min = datetime.combine(date.today(), time.min)
+        today_max = datetime.combine(date.today(), time.max)
+        context['stats'] = {}
+        context['stats']['total'] = questions.count()
+        context['stats']['today'] = questions.filter(published_time__range=(today_min, today_max)).count()
+        context['stats']['answered'] = questions.filter(choices__answers__isnull=False).count()
+        
         return context
 
 class UserListView(ListView):
@@ -111,7 +123,14 @@ class PollDetailView(DetailView):
         context = super(PollDetailView, self).get_context_data(**kwargs)
         context['pie_data'] = [[', '.join(choice.content_rawtext.splitlines()), choice.num_votes()] for choice in self.get_object().choices.all()]
         context['versions'] = reversion.get_unique_for_object(self.get_object())
-        context['diffs'] = []    
+        return context
+        
+class PollRevisionDetailView(PollDetailView):
+    template_name = 'poll/question_revision.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PollRevisionDetailView, self).get_context_data(**kwargs)
+        context['diffs'] = []
         for a, b in pairwise(context['versions']):
             temp = {}
             temp['related'] = []
@@ -122,16 +141,6 @@ class PollDetailView(DetailView):
                 else:
                     temp['related'].append((diff_patch, c))
             context['diffs'].append(temp)
-        # context['diffs'].reverse()
-        return context
-        
-class PollRevisionDetailView(PollDetailView):
-    template_name = 'poll/question_revision.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super(PollDetailView, self).get_context_data(**kwargs)
-        context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
-        context['revisions'] = reversion.get_unique_for_object(self.get_object())
         return context
 
 class PollResultsView(DetailView):

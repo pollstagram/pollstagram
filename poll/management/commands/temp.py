@@ -5,6 +5,7 @@ from voting.models import Vote
 from reversion.helpers import generate_patch_html
 import pprint, reversion
 from itertools import tee, izip
+from django.db.models import Sum, Count, Max, Min
 
 class Dummy(object):
     pass
@@ -22,21 +23,28 @@ def pairwise(iterable):
 class Command(BaseCommand):
         
     def handle(self, *args, **options):
-        q = Question.objects.get(pk=24)
-        choices = q.choices.all()
-        user = User.objects.get(pk=1)
-        a = Answer.objects.get_or_create(user=user, choice=choices[0])[0]
-        print a.choice.question.choices.exclude(answers=a).filter(answers__user=user)
-        # a.full_clean()
-        b = Answer.objects.get_or_create(user=user, choice=choices[2])[0]
-        print b.choice.question.choices.exclude(answers=b).filter(answers__user=user)
-        # b.full_clean()
-        print b.choice.question.choices.filter(answers__user=user)
+        # q = Question.objects.get(pk=24)
+        # choices = q.choices.all()
+        # user = User.objects.get(pk=1)
+        # a = Answer.objects.get_or_create(user=user, choice=choices[0])[0]
+        # print a.choice.question.choices.exclude(answers=a).filter(answers__user=user)
+        # # a.full_clean()
+        # b = Answer.objects.get_or_create(user=user, choice=choices[2])[0]
+        # print b.choice.question.choices.exclude(answers=b).filter(answers__user=user)
+        # # b.full_clean()
+        # print b.choice.question.choices.filter(answers__user=user)
+        # exit(0)
+        questions = Question.objects.all()
+        print questions.count()
+        unanswered = questions.filter(choices__answers__isnull=True).aggregate(Count('choices__answers'))
+        print unanswered
         exit(0)
         
-        q = Question.objects.get(pk=24)
+        q = Question.objects.get(pk=27)
         context = {}
         context['versions'] = reversion.get_unique_for_object(q)
+        print dir(context['versions'][0].revision)
+        exit(0)
         print context['versions'][0].revision.date_created
         context['diffs'] = []
 
