@@ -28,18 +28,67 @@ class UserAnswerTest(TestCase):
         
     def test_user_can_answer(self):
         question = Question.objects.get(content_markdown__icontains='test')
-        print question.choices.all()
+        #print question.choices.all()
         self.assertTrue(True)
 
     def test_user_can_be_found(self):
         question = Question.objects.get(content_markdown__icontains='this')
         choice = Choice.objects.get(content_markdown__icontains='1')
-        print choice.answers.all()
-        print [c.user for c in choice.answers.all()]
-        print [c.choice for c in choice.answers.all()]
-        print [c.answer_time for c in choice.answers.all()]
+        #print choice.answers.all()
+        #print [c.user for c in choice.answers.all()]
+        #print [c.choice for c in choice.answers.all()]
+        #print [c.answer_time for c in choice.answers.all()]
         self.assertTrue(True)
 
+class UserLogin(TestCase):
+    def setUp(self):
+        user1 = User.objects.create_user('user', 'tester@test.com', 'asdf')
+
+    def test_login(self):
+        params = {
+            'username' : 'user',
+            'password' : 'asdf'
+        }
+        resp = self.client.post('/accounts/login/', params)
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'], 'http://testserver/accounts/profile/')
+
+class UserCreatePollTest(TestCase):
+    def setUp(self):
+        user1 = User.objects.create_user('user', 'tester@test.com', 'asdf')
+        self.assertTrue(True)
+
+
+    def test_create_poll(self):
+        params = {
+            'username' : 'user',
+            'password' : 'asdf'
+        }
+        resp = self.client.post('/accounts/login/', params)
+        resp = self.client.get('/accounts/profile/')
+        print resp
+        poll = {
+            'csrfmiddlewaretoken' : 'Y9s1zYmwIpqtAHRQxvGsACxX4xr7WYUx',
+            'content_markdown' : 'question',
+            'tags' : 'tag',
+            'choices-TOTAL_FORMS' : '2',
+            'choices-INITIAL_FORMS' : '0',
+            'choices-MAX_NUM_FORMS' : '1000',
+            'choices-0-content_markdown' : 'first',
+            'choices-0-id' : ' ',
+            'choices-1-content_markdown' : 'second',
+            'choices-1-id' : ' '
+        }
+        resp = self.client.post('/polls/create/', poll)
+        # print resp
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Location'], 'http://testserver/accounts/register/complete/')
+        #try:
+        #    user = User.objects.get(username='user')
+        #except:
+        #    self.assertFalse('user does not exist')
+
+        
 class UserRegisterTest(TestCase):
     def setUp(self):
         self.assertTrue(True)
@@ -58,7 +107,7 @@ class UserRegisterTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         try:
             user = User.objects.get(username='user')
-            self.assertFalse('the user should not be created')
+            self.assertFalse('user should not be created')
         except:
             self.assertTrue(True)
 
