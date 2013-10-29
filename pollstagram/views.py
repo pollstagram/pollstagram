@@ -57,15 +57,14 @@ class IndexView(ListView):
     
     def get_queryset(self):
         questions = Question.objects.all()
-	    
         if self.request.GET:
             form = self.form_class(self.request.GET)
         else:
             form = self.form_class()
 	    
 	    # Handle different possible orderings of question list
-	    if 'sortby' in self.request.GET:
-	        questions = questions.sorted_by(self.request.GET['sortby'])
+        if 'sortby' in self.request.GET:
+            questions = Question.sorted_by(self.request.GET['sortby'])
 	    
         if 'tag' in self.kwargs:
             tag_list = self.kwargs['tag'].split('+')
@@ -89,7 +88,6 @@ class IndexView(ListView):
         context['stats'] = {}
         context['stats']['total'] = questions.count()
         context['stats']['today'] = questions.filter(published_time__range=(today_min, today_max)).count()
-        context['stats']['answered'] = questions.filter(choices__answers__isnull=False).count()
         
         return context
 

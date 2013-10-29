@@ -11,24 +11,8 @@
     <a class="navbar-brand" href="/">Pollstagram</a>
   </div>
   <div class="navbar-collapse collapse">
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></a></li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span> Options <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li class="divider"></li>
-          <li class="dropdown-header">Nav header</li>
-          <li><a href="#">Separated link</a></li>
-          <li><a href="#">One more separated link</a></li>
-        </ul>
-      </li>
-      <li><a href="{% url 'about' %}"><span class="glyphicon glyphicon-info-sign"></span> About</a></a></li>
-	</ul>
 	<ul class="nav navbar-nav navbar-right">
-		<li><a href="#"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+		<li><a href="{% url 'about' %}"><span class="glyphicon glyphicon-info-sign"></span> About</a></a></li>
 		{% if user.is_authenticated %}
 		<li class="dropdown">
 	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -76,9 +60,7 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li><a href="?sortby=newest">Newest</a></li>
-                        <li><a href="?sortby=mostvotes">Most votes</a></li>
                         <li><a href="?sortby=mostpopular">Most popular</a></li>
-                        <li><a href="?sortby=5050question">50-50 question</a></li>
                     </ul>
             </div>
 			<a href="{% url 'poll_create' %}" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-question-sign"></span> Ask a Question</a>
