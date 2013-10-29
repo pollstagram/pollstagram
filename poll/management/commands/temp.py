@@ -23,6 +23,18 @@ class Command(BaseCommand):
         
     def handle(self, *args, **options):
         q = Question.objects.get(pk=24)
+        choices = q.choices.all()
+        user = User.objects.get(pk=1)
+        a = Answer.objects.get_or_create(user=user, choice=choices[0])[0]
+        print a.choice.question.choices.exclude(answers=a).filter(answers__user=user)
+        # a.full_clean()
+        b = Answer.objects.get_or_create(user=user, choice=choices[2])[0]
+        print b.choice.question.choices.exclude(answers=b).filter(answers__user=user)
+        # b.full_clean()
+        print b.choice.question.choices.filter(answers__user=user)
+        exit(0)
+        
+        q = Question.objects.get(pk=24)
         context = {}
         context['versions'] = reversion.get_unique_for_object(q)
         print context['versions'][0].revision.date_created

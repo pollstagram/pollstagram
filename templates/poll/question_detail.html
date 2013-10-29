@@ -81,6 +81,7 @@
 {% endblock %}
 
 {% block scripts %}
+{{ block.super }}
 {% if user|has_voted:question %}
 {% googlecharts %}
     {# named data and options can be reused #}
