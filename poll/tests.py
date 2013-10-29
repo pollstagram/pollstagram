@@ -7,7 +7,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from poll.models import Question, Choice, Answer
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserManager
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -39,3 +39,50 @@ class UserAnswerTest(TestCase):
         print [c.choice for c in choice.answers.all()]
         print [c.answer_time for c in choice.answers.all()]
         self.assertTrue(True)
+
+class UserRegisterTest(TestCase):
+    def setUp(self):
+        self.assertTrue(True)
+
+
+    def test_register_invalid(self):
+        invalidUser = {
+            'username' : 'user',
+            'email' : 'user@user.cx',
+            'password1' : 'asdf',
+            'password2' : 'asdf',
+            'first_name' : 'first',
+            'last_name' : 'last',
+        }
+        resp = self.client.post('/accounts/register/', invalidUser)
+        self.assertEqual(resp.status_code, 200)
+        try:
+            user = User.objects.get(username='user')
+            self.assertFalse('the user should not be created')
+        except:
+            self.assertTrue(True)
+
+
+    def test_register_user(self):
+        validUser = {
+            'username' : 'user',
+            'email' : 'user@user.cx',
+            'password1' : 'asdf',
+            'password2' : 'asdf',
+            'first_name' : 'first',
+            'last_name' : 'last',
+            'date_of_birth_month' : '2',
+            'date_of_birth_day' : '16',
+            'date_of_birth_year' : '2000',
+            'gender' : 'Male',
+            'bio' : 'asdf',
+            'avatar' : 'asdf.jpg'
+        }
+        resp = self.client.post('/accounts/register/', validUser)
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['Location'], 'http://testserver/accounts/register/complete/')
+        try:
+            user = User.objects.get(username='user')
+        except:
+            self.assertFalse('user does not exist')
+
