@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
-from django.views.generic import ListView, CreateView, DetailView, UpdateView
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
 from extra_views import InlineFormSet, CreateWithInlinesView, UpdateWithInlinesView, NamedFormsetsMixin
 from extra_views.generic import GenericInlineFormSet
@@ -41,6 +41,10 @@ class PollCreateView(NamedFormsetsMixin, CreateWithInlinesView):
     def forms_valid(self, form, inlines):
         form.instance.created_by = self.request.user
         return super(PollCreateView, self).forms_valid(form, inlines)
+
+class PollDeleteView(DeleteView):
+    model = Question
+    success_url = reverse_lazy('polls_index')
 
 class IndexView(ListView):
     model = Question
