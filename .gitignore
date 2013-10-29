@@ -3,3 +3,5 @@
 *.pyo
 *.swp
 pollstagram/local_settings.py
+pollstagram.db
+build/*
