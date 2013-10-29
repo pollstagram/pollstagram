@@ -35,6 +35,11 @@ class Question(models.Model):
 	    sorted_qs = Question.objects.all()
         return sorted_qs
     
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if self.choices.count() < 2:
+            raise ValidationError('Each question must have 2 or more choices')
+    
     def _ratings(self):
         """
         'score'     aggregated upvote/downvote score
@@ -109,6 +114,14 @@ class Answer(models.Model):
     choice = models.ForeignKey(Choice, related_name='answers')
     user = models.ForeignKey(User)
     answer_time = models.DateTimeField(auto_now_add=True)
+    
+    def user_has_answered_question(self):
+        return self.choice.question.choices.exclude(answers=self).filter(answers__user=self.user).exists()
+    
+    # def clean(self):
+    #     from django.core.exceptions import ValidationError
+    #     if self.choice.question.choices.exclude(answers=self).filter(answers__user=self.user).exists():
+    #         raise ValidationError('User has already voted for this question!')
     
     def get_absolute_url(self):
         return u'/polls/{pk}/results'.format(pk=self.choice.question.id)

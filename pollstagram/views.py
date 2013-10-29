@@ -1,12 +1,13 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.http import HttpResponseRedirect
 from extra_views import InlineFormSet, CreateWithInlinesView, UpdateWithInlinesView, NamedFormsetsMixin
 from extra_views.generic import GenericInlineFormSet
 import os, json, reversion
 from reversion.helpers import generate_patch_html
+from django.forms.formsets import all_valid
 
 from django.contrib.auth.models import User
 from poll.models import Question, Choice, Answer, UserProfile
@@ -36,7 +37,7 @@ class PollCreateView(NamedFormsetsMixin, CreateWithInlinesView):
     form_class = QuestionForm
     inlines = [ChoiceInline,]
     inlines_names = ['choices']
-        
+
     def forms_valid(self, form, inlines):
         form.instance.created_by = self.request.user
         return super(PollCreateView, self).forms_valid(form, inlines)
@@ -231,11 +232,13 @@ class AjaxableResponseMixin(object):
 class AnswerCreateView(AjaxableResponseMixin, CreateView):
     form_class = AnswerForm
     model = Answer
-    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(AnswerCreateView, self).form_valid(form)
+        
+    def get_success_url(self):
+        return reverse('poll_detail', args=(self.object.choice.question.id,))
         
 def home(request):
     if 'search' in request.GET and 'keyword' in request.GET:

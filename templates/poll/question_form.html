@@ -9,6 +9,14 @@
 {% endblock %}
 
 {% block content-detailed %}
+
+{% for error in form.non_field_errors %}
+<div class="alert alert-danger">
+	<strong>Error </strong>
+	{{ error|escape }}
+</div>
+{% endfor %}
+
 <form id="question_form" action="" method="post">
 	<h2>Question</h2>
 	{% csrf_token %}
