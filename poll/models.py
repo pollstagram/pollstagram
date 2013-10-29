@@ -24,6 +24,16 @@ class Question(models.Model):
     
     class Meta:
         ordering = ['-published_time']
+
+    @staticmethod
+    def sorted_by(criterion):
+        if criterion == 'mostpopular':
+            sorted_qs = sorted(Question.objects.all(), \
+	                       key=lambda q: Vote.objects.get_score(q), \
+			       reverse=True)
+	else:
+	    sorted_qs = Question.objects.all()
+        return sorted_qs
     
     def clean(self):
         from django.core.exceptions import ValidationError
@@ -79,7 +89,11 @@ class Choice(models.Model):
     content_markup = models.TextField(max_length=255)
     content_rawtext = models.TextField(max_length=255)
     
-    def num_votes(self):
+    def num_votes(self, _filter={}):
+        if 'gender' in _filter:
+            answers_filtered = [answer for answer in self.answers.all() \
+	                        if answer.user.userprofile.gender == _filter['gender']]
+            return answers_filtered
         return self.answers.count()
     
     def percent_all_votes(self):
@@ -116,17 +130,25 @@ class Answer(models.Model):
         return u'"{choice}" chosen by "{user}" at {time}'.format(choice=unicode(self.choice), user=unicode(self.user), time=self.answer_time)
 
 class UserProfile(models.Model):
-     user = models.OneToOneField(settings.AUTH_USER_MODEL)
+     user = models.OneToOneField(settings.AUTH_USER_MODEL, \
+                                 related_name='userprofile')
      date_of_birth = models.DateField(null=True)
-     gender = models.BooleanField()
+     gender = models.CharField(max_length=7)
      country = CountryField()  
      bio = models.TextField(max_length=255)
-     # TODO: avatar
+     avatar = models.FileField(upload_to='avatars')
 
      def __unicode__(self):
          return self.user
  
 def user_registered_callback(sender, user, request, **kwargs):
+    # Save first and last name for user (not 
+    # saved by default)
+    user.first_name = request.POST['first_name']
+    user.last_name = request.POST['last_name']
+    user.save()
+
+    # Save custom user fields
     profile = UserProfile(user = user)
     birth_year = request.POST['date_of_birth_year']
     birth_month = request.POST['date_of_birth_month']
@@ -136,6 +158,11 @@ def user_registered_callback(sender, user, request, **kwargs):
 					  int(birth_day))
     profile.gender = request.POST['gender']
     profile.bio = request.POST['bio']
+    # Model handles saving of file to filesystem automatically
+    # saves to upload_to argument
+    print request.POST
+    print request.FILES
+    profile.avatar = request.FILES['avatar']
     profile.save()
 
 user_registered.connect(user_registered_callback)

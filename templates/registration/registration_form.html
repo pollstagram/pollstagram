@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="container">
-	<form method="post">
+	<form method="post" enctype="multipart/form-data">
 		<h2>Create an account</h2>
 		{% csrf_token %}
 		{% bootstrap_form form %}

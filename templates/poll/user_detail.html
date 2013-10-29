@@ -11,22 +11,60 @@
 		</h3>
 	</div>
 	<div class="panel-body">
+
 	<div class="row">
 		<div class="col-md-2">
-			<img class="media-object pull-left" width="100px" height="100px" src="{{ STATIC_URL }}default-avatar.png" alt="...">
+			{% if user_detail.userprofile.avatar.url != "" %}	
+				<img class="media-object pull-left" width="100px" 
+				     height="100px" src="{{ user_detail.userprofile.avatar.url }}" alt="...">
+			{% else %}
+				<img class="media-object pull-left" width="100px" 
+				     height="100px" src="{{ STATIC_URL }}default-avatar.png" alt="...">
+			{% endif %}
 		</div>
 		<div class="col-md-2">
-			<strong> First name: </strong><br>
-			<strong> Last name: </strong><br>
-			<strong> Email: </strong><br>
+			<strong>
+			Name: <br>
+			Email:      <br>
+                        Gender:     <br>
+			Date of Birth: <br><br>
+			Member since: <br>
+			Last login: <br>
+			</strong>
 		</div>
-		<div class="col-md-2">
-			{{ user_detail.first_name }} <br>
-			{{ user_detail.last_name }} <br>
+		<div class="col-md-4">
+			{{ user_detail.first_name }} {{ user_detail.last_name }} <br>
+			</span>
 			{{ user_detail.email }} <br>
+			{% if user_detail.userprofile.gender == 'Female' %}
+				<span class="text-info">
+			{% else %}
+				<span class="text-warning">
+			{% endif %}
+			{{ user_detail.userprofile.gender }} <br>
+				</span>
+			{{ user_detail.userprofile.date_of_birth }} <br><br>
+			<span class="text-muted">
+				{{ user_detail.date_joined }} <br>
+				{{ user_detail.last_login }} <br>
+			</span>
+
+		<br><br>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-10">
+			<blockquote>
+				<p>{{ user_detail.userprofile.bio }} </p>
+			</blockquote>
 		</div>
 	</div>
 	</div>
+	{% if user.is_authenticated %}
+	<div class="panel-footer">
+		<a href="{% url 'user_edit' user.username %}"><span class="glyphicon glyphicon-edit"></span> edit</a>
+	</div>
+	{% endif %}
 </div>
 
 <div>
