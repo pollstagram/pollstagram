@@ -14,23 +14,23 @@
 			Questions
 		</li>
 		<li class="list-group-item">
-	    	<span class="badge">2</span>
+	    	<span class="badge">{{ stats.questions.today }}</span>
 			Questions today
 	  	</li>
 		<li class="list-group-item">
-	    	<span class="badge">2</span>
-			Unanswered questions
+	    	<span class="badge">{{ stats.answers.total }}</span>
+			Answers
 	  	</li>
 		<li class="list-group-item">
-	    	<span class="badge">1</span>
-			Answered questions
+	    	<span class="badge">{{ stats.answers.today }}</span>
+			Answers today
 	  	</li>
 		<li class="list-group-item">
-	    	<span class="badge">2</span>
+	    	<span class="badge">{{ user.answer_set.count }}</span>
 			You've answered
 	  	</li>
 		<li class="list-group-item">
-	    	<span class="badge">0</span>
+	    	<span class="badge">{{ user.questions.count }}</span>
 			You've asked
 	  	</li>
 	</ul>

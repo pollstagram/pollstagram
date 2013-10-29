@@ -83,11 +83,17 @@ class IndexView(ListView):
             context['search_form'] = self.form_class()
         
         questions = Question.objects.all()
+        answers = Answer.objects.all()
         today_min = datetime.combine(date.today(), time.min)
         today_max = datetime.combine(date.today(), time.max)
         context['stats'] = {}
-        context['stats']['total'] = questions.count()
-        context['stats']['today'] = questions.filter(published_time__range=(today_min, today_max)).count()
+        context['stats']['questions'] = {}
+        context['stats']['answers'] = {}
+        context['stats']['questions']['total'] = questions.count()
+        context['stats']['questions']['today'] = questions.filter(published_time__range=(today_min, today_max)).count()
+        context['stats']['answers']['total'] = answers.count()
+        context['stats']['answers']['today'] = answers.filter(answer_time__range=(today_min, today_max)).count()
+        
         
         return context
 

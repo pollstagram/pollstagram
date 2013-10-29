@@ -35,7 +35,8 @@ class Command(BaseCommand):
         # print b.choice.question.choices.filter(answers__user=user)
         # exit(0)
         questions = Question.objects.all()
-        print questions.count()
+        print questions[0].choices.answers.all()
+        exit(0)
         unanswered = questions.filter(choices__answers__isnull=True).aggregate(Count('choices__answers'))
         print unanswered
         exit(0)
