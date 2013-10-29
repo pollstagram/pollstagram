@@ -1,0 +1,79 @@
+{% extends "poll/base.html" %}
+
+{% load voting_tags %}
+{% load bootstrap3 %} 
+
+{% block content-detailed %}
+<div class="panel panel-default">
+	{# Display basic profile information #}
+	<div class="panel-heading"> 
+		<h3 class="panel-title">
+                {{ user_detail.username }} 
+		</h3>
+	</div>
+	<div class="panel-body">
+	<div class="row">
+		<div class="col-md-2">
+			{% if user_detail.userprofile.avatar.url != "" %}	
+				<img class="media-object pull-left" width="100px" 
+				     height="100px" src="{{ user_detail.userprofile.avatar.url }}" alt="...">
+			{% else %}
+				<img class="media-object pull-left" width="100px" 
+				     height="100px" src="{{ STATIC_URL }}default-avatar.png" alt="...">
+			{% endif %}
+		</div>
+                <div class="col-md-10">
+		<div class="container">
+			<form method="post" action="{{ action }}">
+				{% csrf_token %}
+				{% bootstrap_form form %}
+				{% buttons %}
+					<button class="btn btn-default" type="submit">Update</button>
+				{% endbuttons %}
+			</form>
+		</div>
+                </div>
+	</div>
+	</div>
+        {% if user.is_authenticated %}
+		<div class="panel-footer">
+			<a href="{% url 'user_detail' user.username %}"><span class="glyphicon glyphicon-info-sign"></span> view </a>
+		</div>
+	{% endif %}
+
+</div>
+
+<div>
+	{# Display question history #}	
+	<!--<div class="container">-->
+	<!-- Left-bottom pane (Questions Asked) -->
+	<div class="col-md-6">
+		<h4> Questions Asked </h4>
+		<hr>
+		{% for question in user_detail.questions.all %}
+			<div class="row">
+				<!-- <div class="col-md-6">-->
+					<span class="badge">{{ question.ratings.score }}</span>
+					<a href="/polls/{{ question.id }}/">&nbsp;&nbsp;{{ question.content_rawtext }}</a>
+				<!-- </div> -->
+			</div>
+		{% endfor %}
+	</div>
+	<!-- Right-bottom pane (Answered) -->
+	<!--<div class="col-md-6">
+		<h4> Questions Answered </h4>
+		<hr>
+		{% for answer in user_detail.answers.all %}
+			<div class="row">
+				<div class="col-md-6">
+					<span class="badge">{{ answer.choice.question.ratings.score }}</span>
+					<a href="/polls/{{ answer.choice.question.id }}/">&nbsp;&nbsp;{{ answer.choice.question.content_rawtext }}</a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>-->
+
+	<!--</div>-->
+
+</div>
+{% endblock %}

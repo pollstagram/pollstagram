@@ -1,0 +1,25 @@
+{% load voting_tags %}
+{% load poll_tags %} 
+
+<div class="col-md-3 text-center">
+	<div class="row">
+		<a href="/users/{{ user.username }}">
+		{% if user.userprofile.avatar.url != "" %}	
+			<img class="" width="100px" 
+			     height="100px" src="{{ user.userprofile.avatar.url }}" alt="...">
+		{% else %}
+			<img class="" width="100px" 
+			     height="100px" src="{{ STATIC_URL }}default-avatar.png" alt="...">
+		{% endif %}
+		</a>
+	</div>
+	<div class="row">
+		<div class="col">
+			<a href="/users/{{ user.username }}">
+				{{ user.username }}
+			</a>
+		</div>
+	</div>
+	<br>
+</div>
+

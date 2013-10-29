@@ -1,0 +1,11 @@
+{% extends "poll/base.html" %}
+{% load voting_tags %} 
+
+{% block content-detailed %}
+<div class="container">
+{% for user in users %}
+	{% include "includes/user_thumbnail.html" %}
+{% endfor %}
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}
