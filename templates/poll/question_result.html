@@ -13,6 +13,10 @@
         {% col "string" "Name" %}"{{ val }}"{% endcol %}
         {% col "number" "Value" %}{{ val }}{% endcol %}
     {% enddata %}
+    {% data pie_data_male "male_data" %}
+        {% col "string" "Name" %}"{{ val }}"{% endcol %}
+        {% col "number" "Value" %}{{ val }}{% endcol %}
+    {% enddata %}
     {# you can also use global javascript variables here, #}
     {# and call functions #}
     {% options "out_options" %}

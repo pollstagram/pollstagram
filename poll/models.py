@@ -84,7 +84,11 @@ class Choice(models.Model):
     content_markup = models.TextField(max_length=255)
     content_rawtext = models.TextField(max_length=255)
     
-    def num_votes(self):
+    def num_votes(self, _filter={}):
+        if 'gender' in _filter:
+            answers_filtered = [answer for answer in self.answers.all() \
+	                        if answer.user.userprofile.gender == _filter['gender']]
+            return answers_filtered
         return self.answers.count()
     
     def percent_all_votes(self):

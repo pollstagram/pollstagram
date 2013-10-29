@@ -1,6 +1,7 @@
 <ul class="nav nav-tabs">
   <li class="active"><a href="#simple_{{ question.id }}" data-toggle="tab">Simple</a></li>
   {% if pie_data %}<li><a href="#advanced" data-toggle="tab">Advanced</a></li>{% endif %}
+  {% if pie_data_male %}<li><a href="#advanced_male" data-toggle="tab">Advanced Male</a></li>{% endif %}
 </ul>
 
 <div class="tab-content">
@@ -32,4 +33,7 @@
 		</div>
   	<div class="tab-pane" id="advanced">
   	</div>
+	<div class="tab-pane" id="advanced_male">
+  	</div>
+
 </div>

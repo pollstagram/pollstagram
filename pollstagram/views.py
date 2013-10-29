@@ -42,8 +42,8 @@ class IndexView(ListView):
     template_name = 'poll/question_list.html'
     
     def get_queryset(self):
-        if 'keyword' in self.request.GET:
-            form = self.form_class(self.request.GET['keyword'])
+        if self.request.GET:
+            form = self.form_class(self.request.GET)
 	else:
 	    form = self.form_class()
 	# Handle different possible orderings of question list
@@ -63,8 +63,8 @@ class IndexView(ListView):
         context = super(IndexView, self).get_context_data(**kwargs)
 	if 'sortby' in self.request.GET:
 	    context['sort_by'] = "&sortby=%s" % self.request.GET['sortby']
-        if 'keyword' in self.request.GET:
-            context['search_form'] = QuestionSearchForm(self.request.GET['keyword'])
+        if self.request.GET:
+            context['search_form'] = QuestionSearchForm(self.request.GET)
         else: 
             context['search_form'] = QuestionSearchForm()
         return context
@@ -97,7 +97,10 @@ class PollDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PollDetailView, self).get_context_data(**kwargs)
-        context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
+	choices = self.get_object().choices.all()
+        context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in choices]
+	context['pie_data_male'] = [[unicode(choice), choice.num_votes({'gender': 'Male'})] \
+	                            for choice in self.get_object().choices.all()]
         context['related_questions'] = self.get_object().tags.similar_objects()
         # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
         return context
