@@ -6,41 +6,6 @@
 
 {% block content-detailed %}
 {% include "includes/detail.html" %}
-
-<table class="table table-hover">
-	<thead>
-		<tr>
-			<th>#</th>
-			<th>Diff Patch</th>
-			<th>Result</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for diff in diffs %}
-		<tr>
-			<td>
-			{{ forloop.counter }}	
-			</td>
-			<td>
-				{{ diff.primary.0|safe }}
-				<ol>
-				{% for related_diff in diff.related %}
-					<li>{{ related_diff.0|safe}}</li>
-				{% endfor %}
-				</ol>
-			</td>
-            <td>
-				{{ diff.primary.1.field_dict.content_markup|safe }}
-				<ol>
-				{% for related_diff in diff.related %}
-					<li>{{ related_diff.1.field_dict.content_markup|safe}}</li>
-				{% endfor %}
-				</ol>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
 {% endblock %}
 
 {% block sidebar %}

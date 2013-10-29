@@ -67,10 +67,23 @@
 			{% endif %}		
 			</div>	
 			<div class="panel-footer">
+				<div class="pull-right">
+					<a href="https://www.facebook.com/sharer/sharer.php?u={{ request.META.HTTP_HOST }}{% url 'poll_detail' question.id %}" target="_blank"><span class="glyphicon glyphicon-share"></span> share</a>
+					{% if user.is_authenticated %}
+						{% ifequal question.created_by user  %}
+						| <a href="{% url 'poll_update' question.id %}"><span class="glyphicon glyphicon-edit"></span> edit</a>
+						| <a href="{% url 'poll_delete' question.id %}"><span class="glyphicon glyphicon-trash"></span> delete</a>
+						{% endifequal %}
+					{% endif %}
+					| <a href="{% url 'poll_revisions' question.id %}">
+						{% if versions %}
+							last edited {{ versions.0.revision.date_created|timesince }} ago
+						{% else %}
+							revision history
+						{% endif %}
+					</a>
+				</div>
 				created by <a href="/users/{{ question.created_by.username }}">{{ question.created_by.username }}</a> {{ question.published_time|timesince }} ago
-				| <a href="/share"><span class="glyphicon glyphicon-share"></span> share</a> 
-				| <a href="{% url 'poll_update' question.id %}"><span class="glyphicon glyphicon-edit"></span> edit</a>
-				| <span class="glyphicon glyphicon-trash"></span> delete
 			</div>
 		</div>
 	</div>
