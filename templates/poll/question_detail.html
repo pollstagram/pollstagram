@@ -6,6 +6,41 @@
 
 {% block content-detailed %}
 {% include "includes/detail.html" %}
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>Diff Patch</th>
+			<th>Result</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for diff in diffs %}
+		<tr>
+			<td>
+			{{ forloop.counter }}	
+			</td>
+			<td>
+				{{ diff.primary.0|safe }}
+				<ol>
+				{% for related_diff in diff.related %}
+					<li>{{ related_diff.0|safe}}</li>
+				{% endfor %}
+				</ol>
+			</td>
+            <td>
+				{{ diff.primary.1.field_dict.content_markup|safe }}
+				<ol>
+				{% for related_diff in diff.related %}
+					<li>{{ related_diff.1.field_dict.content_markup|safe}}</li>
+				{% endfor %}
+				</ol>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
 {% endblock %}
 
 {% block sidebar %}
@@ -32,8 +67,14 @@
 <div class="list-group">
     {% for related in question.tags.similar_objects %}
     <a href="{% url 'poll_detail' related.id %}" class="list-group-item">  
-    <h4 class="list-group-item-heading">{{ related.content_markdown|truncatewords:5 }}</h4>
-    <p class="list-group-item-text">{{ related.content_markdown }}</p>
+    <h4 class="list-group-item-heading">{{ related.content_rawtext }}</h4>
+    <p class="list-group-item-text">
+		<ol>
+		{% for choice in related.choices.all %}
+			<li>{{ choice.content_rawtext }}</li>
+		{% endfor %}
+		</ol>
+	</p>
     </a>
     {% endfor %}
 </div>

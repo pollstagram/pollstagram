@@ -19,7 +19,8 @@ urlpatterns = patterns('',
     url(r'^$', views.IndexView.as_view(), name='home'),
     url(r'^polls/$', views.IndexView.as_view(), name='polls_index'),
     url(r'^tags/$', views.ListView.as_view(model=Tag, context_object_name = 'tags'), name='tags_index'),
-    url(r'^tags/(?P<tag>[\w\+\-\']+)/$', views.IndexView.as_view(), name='tags_questions'),
+    # section 2.3 of RFC 3986 safe and unreserverd url
+    url(r'^tags/(?P<tag>[\w\+\-\.\_\~]+)/$', views.IndexView.as_view(), name='tags_questions'),
     # Generic view to vote on Link objects
     url(r'^polls/(?P<object_id>\d+)/(?P<direction>up|down|clear)vote/?$', 
         vote_on_object, 
@@ -29,6 +30,8 @@ urlpatterns = patterns('',
     url(r'^polls/create/$', login_required(views.PollCreateView.as_view()), name='poll_create'),
     url(r'^polls/(?P<pk>\d+)/$', views.PollDetailView.as_view(), name='poll_detail'),
     url(r'^polls/(?P<pk>\d+)/edit/$', login_required(views.PollUpdateView.as_view()), name='poll_update'),
+    url(r'^polls/(?P<pk>\d+)/revisions/$', views.PollRevisionDetailView.as_view(), name='poll_revisions'),
+    
     url(r'^test/', TemplateView.as_view(template_name="test.html")),
 
     # Uncomment the admin/doc line below to enable admin documentation:

@@ -5,14 +5,21 @@ from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from django.http import HttpResponseRedirect
 from extra_views import InlineFormSet, CreateWithInlinesView, UpdateWithInlinesView, NamedFormsetsMixin
 from extra_views.generic import GenericInlineFormSet
-from taggit.models import Tag
-import os, json
+import os, json, reversion
+from reversion.helpers import generate_patch_html
 
 from django.contrib.auth.models import User
 from poll.models import Question, Choice, Answer, UserProfile
 from datetime import datetime
 from poll.forms import QuestionForm, AnswerForm, ChoiceForm, QuestionChoiceFormset, QuestionSearchForm, \
                        UserEditForm
+from itertools import tee, izip
+
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    next(b, None)
+    return izip(a, b)
 
 class ChoiceInline(InlineFormSet):
     model = Choice
@@ -97,12 +104,30 @@ class PollDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PollDetailView, self).get_context_data(**kwargs)
-	choices = self.get_object().choices.all()
-        context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in choices]
-	context['pie_data_male'] = [[unicode(choice), choice.num_votes({'gender': 'Male'})] \
-	                            for choice in self.get_object().choices.all()]
-        context['related_questions'] = self.get_object().tags.similar_objects()
-        # context['pie_data'] = [['foo', 32], ['bar', 64], ['baz', 96]]
+        context['pie_data'] = [[', '.join(choice.content_rawtext.splitlines()), choice.num_votes()] for choice in self.get_object().choices.all()]
+        context['versions'] = reversion.get_unique_for_object(self.get_object())
+        context['diffs'] = []    
+        for a, b in pairwise(context['versions']):
+            temp = {}
+            temp['related'] = []
+            for i, (c, d) in enumerate(zip(a.revision.version_set.all(), b.revision.version_set.all())):
+                diff_patch = generate_patch_html(d, c, 'content_markdown', cleanup="semantic")
+                if not i:
+                    temp['primary'] = (diff_patch, c)
+                else:
+                    temp['related'].append((diff_patch, c))
+            context['diffs'].append(temp)
+        # context['diffs'].reverse()
+        return context
+        
+class PollRevisionDetailView(PollDetailView):
+    template_name = 'poll/question_revision.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(PollDetailView, self).get_context_data(**kwargs)
+        context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
+        context['revisions'] = reversion.get_unique_for_object(self.get_object())
+>>>>>>> ed534f0fa4dd690bc73ed65711aefc5f86238d85
         return context
 
 class PollResultsView(DetailView):

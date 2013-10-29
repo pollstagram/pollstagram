@@ -5,6 +5,7 @@ MySQL-python==1.2.3
 South==0.8.2
 Unipath==1.0
 boto==2.13.3
+diff-match-patch==20120106
 django-bootstrap3==1.0.0
 django-countries==1.5
 django-crispy-forms==1.4.0
