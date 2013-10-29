@@ -127,7 +127,6 @@ class PollRevisionDetailView(PollDetailView):
         context = super(PollDetailView, self).get_context_data(**kwargs)
         context['pie_data'] = [[unicode(choice), choice.num_votes()] for choice in self.get_object().choices.all()]
         context['revisions'] = reversion.get_unique_for_object(self.get_object())
->>>>>>> ed534f0fa4dd690bc73ed65711aefc5f86238d85
         return context
 
 class PollResultsView(DetailView):
