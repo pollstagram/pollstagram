@@ -34,12 +34,12 @@ class Question(models.Model):
 	else:
 	    sorted_qs = Question.objects.all()
         return sorted_qs
-    
-    def clean(self):
-        from django.core.exceptions import ValidationError
-        if self.choices.count() < 2:
-            raise ValidationError('Each question must have 2 or more choices')
-    
+    # 
+    # def clean(self):
+    #     from django.core.exceptions import ValidationError
+    #     if self.choices.count() < 2:
+    #         raise ValidationError('Each question must have 2 or more choices')
+    # 
     def _ratings(self):
         """
         'score'     aggregated upvote/downvote score
@@ -48,8 +48,14 @@ class Question(models.Model):
         return Vote.objects.get_score(self)
     
     def save(self, *args, **kwargs):
-        self.content_markup = markdown(self.content_markdown, ['codehilite'])
-        self.content_rawtext = ''.join(BeautifulSoup(self.content_markup).findAll(text=True))
+        markup = markdown(self.content_markdown, ['codehilite'])
+        soup = BeautifulSoup(markup)
+        for img in soup.findAll('img'):
+            img.attrs.append(('class', 'img-thumbnail'))
+            img.attrs.append(('height', '300'))
+            img.attrs.append(('width', '300'))
+        self.content_markup = soup.prettify(soup.original_encoding)
+        self.content_rawtext = ''.join(soup.findAll(text=True))
         super(Question, self).save(*args, **kwargs)
 
     def _results(self):
@@ -103,8 +109,14 @@ class Choice(models.Model):
         return self.answers.filter(user=user).exists()
             
     def save(self, *args, **kwargs):
-        self.content_markup = markdown(self.content_markdown, ['codehilite'])
-        self.content_rawtext = ''.join(BeautifulSoup(self.content_markup).findAll(text=True))
+        markup = markdown(self.content_markdown, ['codehilite'])
+        soup = BeautifulSoup(markup)
+        for img in soup.findAll('img'):
+            img.attrs.append(('class', 'img-thumbnail'))
+            img.attrs.append(('height', '300'))
+            img.attrs.append(('width', '300'))
+        self.content_markup = soup.prettify(soup.original_encoding)
+        self.content_rawtext = ''.join(soup.findAll(text=True))
         super(Choice, self).save(*args, **kwargs)    
         
     def __unicode__(self):

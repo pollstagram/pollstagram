@@ -35,7 +35,7 @@
 				{{ question.content_markup|safe }}
 			</div>
 			<div id="temp_div">
-			{% if user|has_voted:question %}
+			{% if user.is_authenticated and user|has_voted:question %}
 				{% include "includes/result.html" %}
 			{% else %}
 				<form class="poll_answer" method="post" action="{% url 'answer_create' %}" role="form">

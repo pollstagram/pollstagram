@@ -26,7 +26,7 @@ urlpatterns = patterns('',
         vote_on_object, 
         dict(model=Question, template_object_name='questions', allow_xmlhttprequest=True)
     ),
-    url(r'^answers/create/$', login_required(views.AnswerCreateView.as_view()), name='answer_create'),
+    url(r'^answers/create/$', login_required(views.AnswerCreateView.as_view(), redirect_field_name=None), name='answer_create'),
     url(r'^polls/create/$', login_required(views.PollCreateView.as_view()), name='poll_create'),
     url(r'^polls/(?P<pk>\d+)/$', views.PollDetailView.as_view(), name='poll_detail'),
     url(r'^polls/(?P<pk>\d+)/edit/$', login_required(views.PollUpdateView.as_view()), name='poll_update'),
