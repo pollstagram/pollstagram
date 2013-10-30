@@ -1,11 +1,13 @@
 from django.core.management.base import BaseCommand, CommandError
 from poll.models import Question, Choice, Answer
+from voting.models import Vote
 from django.contrib.auth.models import User
 from voting.models import Vote
 from reversion.helpers import generate_patch_html
 import pprint, reversion
 from itertools import tee, izip
 from django.db.models import Sum, Count, Max, Min
+from random import randrange
 
 class Dummy(object):
     pass
@@ -23,6 +25,17 @@ def pairwise(iterable):
 class Command(BaseCommand):
         
     def handle(self, *args, **options):
+        
+        questions = Question.objects.all()
+        for i in xrange(100):
+            user, created = User.objects.get_or_create(username='tester{num}'.format(num=i), first_name='Tester', last_name='Number {num}'.format(num=i),  email='tester{num}@test.com'.format(num=i), password='test')
+            for question in questions:
+                Vote.objects.record_vote(question, user, randrange(2)-1)
+                num_choices = question.choices.count()
+                choice = question.choices.all()[randrange(num_choices)]
+                Answer.objects.get_or_create(choice=choice, user=user)
+        exit(0)
+        
         # q = Question.objects.get(pk=24)
         # choices = q.choices.all()
         # user = User.objects.get(pk=1)
