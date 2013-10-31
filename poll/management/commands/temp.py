@@ -8,6 +8,7 @@ import pprint, reversion
 from itertools import tee, izip
 from django.db.models import Sum, Count, Max, Min
 from random import randrange
+from django.contrib.auth.hashers import make_password
 
 class Dummy(object):
     pass
@@ -27,10 +28,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         
         questions = Question.objects.all()
-        for i in xrange(100):
+        for i in xrange(300):
             user, created = User.objects.get_or_create(username='tester{num}'.format(num=i), first_name='Tester', last_name='Number {num}'.format(num=i),  email='tester{num}@test.com'.format(num=i), password='test')
+            user.password = make_password('test')
+            user.save()
             for question in questions:
-                Vote.objects.record_vote(question, user, randrange(2)-1)
+                distribution = [-1, 0, 1, 1, 1]
+                Vote.objects.record_vote(question, user, distribution[randrange(len(distribution))])
                 num_choices = question.choices.count()
                 choice = question.choices.all()[randrange(num_choices)]
                 Answer.objects.get_or_create(choice=choice, user=user)

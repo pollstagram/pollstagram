@@ -36,14 +36,25 @@
 			{{ user_detail.first_name }} {{ user_detail.last_name }} <br>
 			</span>
 			{{ user_detail.email }} <br>
-			{% if user_detail.userprofile.gender == 'Female' %}
-				<span class="text-info">
+			{% if user_detail.userprofile.gender %}
+				{% if user_detail.userprofile.gender == 'Female' %}
+					<span class="text-info">
+				{% else %}
+					<span class="text-warning">
+				{% endif %}
+				{{ user_detail.userprofile.gender }} 
 			{% else %}
-				<span class="text-warning">
-			{% endif %}
-			{{ user_detail.userprofile.gender }} <br>
+			<span class="text-muted">
+				Not provided
 				</span>
-			{{ user_detail.userprofile.date_of_birth }} <br><br>
+			{% endif %}
+			<br>
+				</span>
+			{% if user_detail.userprofile.date_of_birth %}{{ user_detail.userprofile.date_of_birth }}{% else %}
+			<span class="text-muted">
+				Not provided
+			</span>
+			{% endif %} <br><br>
 			<span class="text-muted">
 				{{ user_detail.date_joined }} <br>
 				{{ user_detail.last_login }} <br>

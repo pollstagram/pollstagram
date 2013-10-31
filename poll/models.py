@@ -145,10 +145,10 @@ class UserProfile(models.Model):
      user = models.OneToOneField(settings.AUTH_USER_MODEL, \
                                  related_name='userprofile')
      date_of_birth = models.DateField(null=True)
-     gender = models.CharField(max_length=7)
-     country = CountryField()  
-     bio = models.TextField(max_length=255)
-     avatar = models.FileField(upload_to='avatars')
+     gender = models.CharField(max_length=7, null=True)
+     country = CountryField(null=True)
+     bio = models.TextField(max_length=255, null=True, blank=True)
+     avatar = models.FileField(upload_to='avatars', null=True)
 
      def __unicode__(self):
          return self.user
@@ -162,19 +162,24 @@ def user_registered_callback(sender, user, request, **kwargs):
 
     # Save custom user fields
     profile = UserProfile(user = user)
+    
     birth_year = request.POST['date_of_birth_year']
     birth_month = request.POST['date_of_birth_month']
     birth_day = request.POST['date_of_birth_day']
-    profile.date_of_birth = datetime.date(int(birth_year), 
-                                          int(birth_month), 
-					  int(birth_day))
-    profile.gender = request.POST['gender']
+    try:
+        profile.date_of_birth = datetime.date(int(birth_year), int(birth_month), int(birth_day))
+    except ValueError:
+        pass
+    
+    try:
+        profile.gender = request.POST['gender']
+        # Model handles saving of file to filesystem automatically
+        # saves to upload_to argument
+        profile.avatar = request.FILES['avatar']
+    except KeyError:
+        pass
     profile.bio = request.POST['bio']
-    # Model handles saving of file to filesystem automatically
-    # saves to upload_to argument
-    print request.POST
-    print request.FILES
-    profile.avatar = request.FILES['avatar']
+
     profile.save()
 
 user_registered.connect(user_registered_callback)

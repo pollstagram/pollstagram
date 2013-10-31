@@ -18,12 +18,11 @@ class UserProfileForm(RegistrationForm):
     # how to integrate ModelForm with django-registration
     first_name = forms.CharField(min_length=2, max_length=20)
     last_name = forms.CharField(min_length=2, max_length=20)
-    date_of_birth = forms.DateField(widget=extras.SelectDateWidget(years=YEARS))
-    gender = forms.CharField(widget=RadioSelect(choices=GENDER_CHOICES))
-    bio = forms.CharField(max_length=255, widget=forms.Textarea)
+    date_of_birth = forms.DateField(widget=extras.SelectDateWidget(years=YEARS), required=False)
+    gender = forms.CharField(widget=RadioSelect(choices=GENDER_CHOICES), required=False)
+    bio = forms.CharField(max_length=255, widget=forms.Textarea, required=False)
     avatar = forms.FileField(label='Select a file for avatar', \
-                             help_text='max. 42 megabytes', \
-			     required=False)
+                             help_text='max. 42 megabytes', required=False)
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
